@@ -153,8 +153,7 @@ export default {
 
                 // Sources
                 'source/googlemusic/googlemusic',
-                'source/netflix/netflix',
-                'source/netflix/shim/shim'
+                'source/netflix/netflix'
             ]
         }),
         new webpack.optimize.CommonsChunkPlugin({
