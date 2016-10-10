@@ -1,15 +1,12 @@
 {
   "manifest_version": 2,
-
   "name": "Eon Alpha",
   "description": "TODO",
-  "version": "0.1.0",
-
+  "version": "0.2.0",
   "background": {
     "scripts": [
       "vendor.js",
       "shared.js",
-
       "background/vendor.js",
       "background/shared.js",
       "background/relay/relay.js",
@@ -17,11 +14,9 @@
       "background/sync/sync.js"
     ]
   },
-
   "web_accessible_resources": [
     "configuration/configuration.html"
   ],
-
   "options_ui": {
     "page": "configuration/configuration.html?embedded"
   }
