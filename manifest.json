@@ -3,6 +3,12 @@
   "name": "Eon Alpha",
   "description": "TODO",
   "version": "0.2.0",
+  "applications": {
+    "gecko": {
+      "id": "eon@dgardiner.net",
+      "strict_min_version": "42.0"
+    }
+  },
   "background": {
     "scripts": [
       "vendor.js",
