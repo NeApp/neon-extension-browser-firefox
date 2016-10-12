@@ -1,9 +1,10 @@
 import fs from 'fs';
 import gutil from 'gulp-util';
-import path from 'path';
 import merge from 'lodash-es/merge';
+import mkdirp from 'mkdirp';
+import path from 'path';
 
-import {isDefined, listModules, logModuleWarning, buildPath, rootPath} from './core/helpers';
+import {BuildDirectory, isDefined, listModules, logModuleWarning, rootPath} from './core/helpers';
 
 
 export function build(Config) {
@@ -37,12 +38,10 @@ export function build(Config) {
         });
 
         // Ensure build directory exists
-        if(!fs.existsSync(buildPath)) {
-            fs.mkdirSync(buildPath);
-        }
+        mkdirp.sync(BuildDirectory.Unpacked.Development);
 
         // Save manifest to build directory
-        let destPath = path.join(buildPath, 'manifest.json');
+        let destPath = path.join(BuildDirectory.Unpacked.Development, 'manifest.json');
 
         fs.writeFile(destPath, JSON.stringify(manifest, null, 2), (err) => {
             if(err) {
@@ -92,7 +91,7 @@ function mergeModuleManifest(manifest, module) {
         contentScript.conditions.forEach((condition) => {
             if(!isDefined(condition) || !isDefined(condition.pattern)) {
                 console.warn('Invalid content script condition:', condition);
-                return null;
+                return;
             }
 
             moduleOrigins[condition.pattern] = true;

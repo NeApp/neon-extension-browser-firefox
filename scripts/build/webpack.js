@@ -1,10 +1,11 @@
 import fs from 'fs';
 import gutil from 'gulp-util';
+import mkdirp from 'mkdirp';
 import path from 'path';
 import util from 'util';
 import webpack from 'webpack';
 
-import {listModules, listModuleType, rootPath, buildPath, projectPath} from './core/helpers';
+import {BuildDirectory, listModules, listModuleType, rootPath, projectPath} from './core/helpers';
 import Base from './webpack.config';
 
 export const StaticModules = {
@@ -35,7 +36,7 @@ export function build(Config) {
             }
 
             // Write statistics to file
-            let statisticsPath = path.join(buildPath, 'webpack.stats.json');
+            let statisticsPath = path.join(BuildDirectory.Root, 'webpack.stats.json');
             let statistics = JSON.stringify(stats.toJson('verbose'));
 
             return fs.writeFile(statisticsPath, statistics, function(err) {
@@ -63,13 +64,11 @@ export function constructCompiler(Config) {
     }
 
     // Ensure build directory exists
-    if(!fs.existsSync(buildPath)) {
-        fs.mkdirSync(buildPath);
-    }
+    mkdirp.sync(BuildDirectory.Root);
 
     // Save configuration
     fs.writeFileSync(
-        path.join(buildPath, 'webpack.config.js'),
+        path.join(BuildDirectory.Root, 'webpack.config.js'),
         util.inspect(configuration, {
             depth: null
         }),

@@ -5,8 +5,16 @@ import vm from 'vm';
 
 
 export const rootPath = path.resolve(__dirname, '../../../');
-export const buildPath = path.join(rootPath, 'build');
 export const projectPath = path.join(rootPath, '../../');
+
+export const BuildDirectory = {
+    Root: path.join(rootPath, 'build'),
+
+    Unpacked: {
+        Development: path.join(rootPath, 'build', 'unpacked', 'development'),
+        Production: path.join(rootPath, 'build', 'unpacked', 'production')
+    }
+};
 
 let moduleErrors = {};
 let moduleWarnings = {};

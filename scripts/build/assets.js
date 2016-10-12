@@ -3,15 +3,13 @@ import glob from 'glob';
 import mkdirp from 'mkdirp';
 import path from 'path';
 
-import {listModules, buildPath} from './core/helpers';
+import {BuildDirectory, listModules} from './core/helpers';
 
 export function build(Config) {
     let modules = listModules(Config.Modules);
 
     // Ensure build directory exists
-    if(!fs.existsSync(buildPath)) {
-        fs.mkdirSync(buildPath);
-    }
+    mkdirp.sync(BuildDirectory.Unpacked.Development);
 
     // Build modules
     return Promise.all(Object.keys(modules).map((moduleName) => {
@@ -22,7 +20,7 @@ export function build(Config) {
 function buildModule(module) {
     let moduleAssetsPath = path.join(module.path, 'assets');
 
-    return copy(moduleAssetsPath, buildPath, [
+    return copy(moduleAssetsPath, BuildDirectory.Unpacked.Development, [
         '**/*.html'
     ]);
 }
@@ -45,12 +43,8 @@ function copyGlob(pattern, base, dest) {
                 let assetPath = path.relative(base, filePath);
                 let destPath = path.join(dest, assetPath);
 
-                // Ensure directory exists
-                let destDir = path.dirname(destPath);
-
-                if(!fs.existsSync(destDir)) {
-                    mkdirp.sync(destDir);
-                }
+                // Ensure destination directory exists
+                mkdirp.sync(path.dirname(destPath));
 
                 // Copy file to build directory
                 fs.createReadStream(filePath)

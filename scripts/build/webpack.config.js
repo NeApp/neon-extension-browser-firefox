@@ -3,7 +3,7 @@ import gutil from 'gulp-util';
 import path from 'path';
 import webpack from 'webpack';
 
-import {projectPath, rootPath} from './core/helpers';
+import {BuildDirectory, projectPath, rootPath} from './core/helpers';
 
 
 let bundled = {};
@@ -73,7 +73,7 @@ export default {
     externals: [],
 
     output: {
-        path: path.join(rootPath, 'build'),
+        path: BuildDirectory.Unpacked.Development,
         filename: '[name].js'
     },
 
