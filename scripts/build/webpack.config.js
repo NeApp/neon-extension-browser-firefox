@@ -113,6 +113,7 @@ export default {
                 return true;
             },
             chunks: [
+                'background/callback/callback',
                 'background/relay/relay',
                 'background/scrobble/scrobble',
                 'background/sync/sync'

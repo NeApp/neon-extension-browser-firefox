@@ -15,11 +15,15 @@
       "shared.js",
       "background/vendor.js",
       "background/shared.js",
+      "background/callback/callback.js",
       "background/relay/relay.js",
       "background/scrobble/scrobble.js",
       "background/sync/sync.js"
     ]
   },
+  "permissions": [
+    "webRequest"
+  ],
   "web_accessible_resources": [
     "configuration/configuration.html"
   ],

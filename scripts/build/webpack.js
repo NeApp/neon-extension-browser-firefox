@@ -254,6 +254,10 @@ function generateModules(Config, modules) {
 
     return {
         // Core
+        'background/callback/callback': [
+            ...Config.CommonRequirements,
+            'eon.extension.core/modules/background/callback'
+        ],
         'background/relay/relay': [
             ...Config.CommonRequirements,
             'eon.extension.core/modules/background/relay'
