@@ -5,16 +5,16 @@ import URI from 'urijs';
 
 export class FirefoxExtension extends WebExtensionsExtension {
     getCallbackPattern() {
-        let prefix = new URI('https://self')
-            .segmentCoded([this.id])
+        let prefix = new URI('https://extension')
+            .segmentCoded([this.key])
             .toString();
 
         return prefix + '/*';
     }
 
-    getCallbackUrl(id, path) {
-        return new URI('https://self')
-            .segmentCoded([this.id, id])
+    getCallbackUrl(path) {
+        return new URI('https://extension')
+            .segmentCoded([this.key])
             .segment(path)
             .toString();
     }
