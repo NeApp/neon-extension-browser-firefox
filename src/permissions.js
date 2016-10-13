@@ -1,4 +1,4 @@
-import WebExtensionsPermissions from 'eon.extension.browser.base.webextensions/permissions';
+import {WebExtensionsPermissions} from 'eon.extension.browser.base.webextensions/permissions';
 
 import {NotImplementedError} from 'eon.extension.framework/core/exceptions';
 

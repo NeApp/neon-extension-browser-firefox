@@ -1,6 +1,6 @@
-import WebExtensionsPreferences from 'eon.extension.browser.base.webextensions/preferences';
+import {WebExtensionsPreferences} from 'eon.extension.browser.base.webextensions/preferences';
 
-import FirefoxStorage from '../storage';
+import {FirefoxStorage} from '../storage';
 
 
 export class FirefoxPreferences extends WebExtensionsPreferences {

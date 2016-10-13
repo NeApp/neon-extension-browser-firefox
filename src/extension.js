@@ -1,4 +1,4 @@
-import WebExtensionsExtension from 'eon.extension.browser.base.webextensions/extension';
+import {WebExtensionsExtension} from 'eon.extension.browser.base.webextensions/extension';
 
 import URI from 'urijs';
 

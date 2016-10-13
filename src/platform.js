@@ -1,4 +1,4 @@
-import WebExtensionsPlatform, {Platforms, PlatformTypes} from 'eon.extension.browser.base.webextensions/platform';
+import {WebExtensionsPlatform, Platforms, PlatformTypes} from 'eon.extension.browser.base.webextensions/platform';
 
 
 export {

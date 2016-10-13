@@ -1,6 +1,6 @@
-import WebExtensionsWebRequest from 'eon.extension.browser.base.webextensions/web/request';
+import {WebExtensionsWebRequest} from 'eon.extension.browser.base.webextensions/web/request';
 
-import FirefoxWebRequestEvent from './requestEvent';
+import {FirefoxWebRequestEvent} from './requestEvent';
 
 
 export class FirefoxWebRequest extends WebExtensionsWebRequest {

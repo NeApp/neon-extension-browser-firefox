@@ -1,4 +1,4 @@
-import WebExtensionsTabs from 'eon.extension.browser.base.webextensions/tabs';
+import {WebExtensionsTabs} from 'eon.extension.browser.base.webextensions/tabs';
 
 
 export class FirefoxTabs extends WebExtensionsTabs {

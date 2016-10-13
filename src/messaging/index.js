@@ -1,6 +1,6 @@
-import WebExtensionsMessaging from 'eon.extension.browser.base.webextensions/messaging';
+import {WebExtensionsMessaging} from 'eon.extension.browser.base.webextensions/messaging';
 
-import FirefoxPort from './port';
+import {FirefoxPort} from './port';
 
 
 export class FirefoxMessaging extends WebExtensionsMessaging {

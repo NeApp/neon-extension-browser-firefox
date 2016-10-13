@@ -1,5 +1,5 @@
-import WebExtensionsPreferencesContext from 'eon.extension.browser.base.webextensions/preferences/context';
+import {WebExtensionsPreferencesContext} from 'eon.extension.browser.base.webextensions/preferences/context';
 
 
-export default class FirefoxPreferencesContext extends WebExtensionsPreferencesContext {
+export class FirefoxPreferencesContext extends WebExtensionsPreferencesContext {
 }

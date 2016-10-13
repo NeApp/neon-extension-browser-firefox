@@ -1,4 +1,5 @@
-import WebExtensionsDeclarativeContent, {
+import {
+    WebExtensionsDeclarativeContent,
     PageStateMatcher,
     RequestContentScript,
     SetIcon,

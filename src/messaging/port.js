@@ -1,5 +1,5 @@
-import WebExtensionsPort from 'eon.extension.browser.base.webextensions/messaging/port';
+import {WebExtensionsPort} from 'eon.extension.browser.base.webextensions/messaging/port';
 
 
-export default class FirefoxPort extends WebExtensionsPort {
+export class FirefoxPort extends WebExtensionsPort {
 }
