@@ -153,6 +153,7 @@ export default {
                 'destination/trakt/callback/callback',
 
                 // Sources
+                'source/amazonvideo/amazonvideo',
                 'source/googlemusic/googlemusic',
                 'source/netflix/netflix'
             ]
