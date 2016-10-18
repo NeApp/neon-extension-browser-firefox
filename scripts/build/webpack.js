@@ -385,10 +385,6 @@ function getModuleServices(module) {
     // Retrieve module services
     return [].concat.apply([], module.services
         .map((type) => {
-            if(type === 'configuration') {
-                return null;
-            }
-
             // Build service name
             let serviceName = type.substring(type.indexOf('/') + 1);
 
@@ -402,6 +398,11 @@ function getModuleServices(module) {
                 return null;
             }
 
+            // Ignore core configuration service
+            if(type === 'configuration') {
+                return [servicePath];
+            }
+
             // Find matching main module
             let mainPath = path.resolve(projectPath, 'eon.extension.core/src/modules/' + type + '/index.js');
 
@@ -412,7 +413,7 @@ function getModuleServices(module) {
                 return null;
             }
 
-            // Found service, include in result
+            // Found service
             return [
                 servicePath,
                 mainPath
