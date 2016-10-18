@@ -266,11 +266,17 @@ function generateModules(Config, modules) {
             ...getServices(destinations, 'destination/scrobble'),
             'eon.extension.core/modules/background/scrobble'
         ],
+        'background/storage/storage': [
+            ...Config.CommonRequirements,
+            'eon.extension.core/modules/background/storage'
+        ],
         'background/sync/sync': [
             ...Config.CommonRequirements,
             ...getServices(destinations, 'destination/sync'),
             'eon.extension.core/modules/background/sync'
         ],
+
+        // Configuration
         'configuration/configuration': [
             ...Config.CommonRequirements,
             ...getServices(modules, 'configuration', modules),

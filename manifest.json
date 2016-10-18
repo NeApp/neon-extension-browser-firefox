@@ -18,6 +18,7 @@
       "background/callback/callback.js",
       "background/relay/relay.js",
       "background/scrobble/scrobble.js",
+      "background/storage/storage.js",
       "background/sync/sync.js"
     ]
   },

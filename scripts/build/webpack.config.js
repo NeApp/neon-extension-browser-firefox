@@ -116,6 +116,7 @@ export default {
                 'background/callback/callback',
                 'background/relay/relay',
                 'background/scrobble/scrobble',
+                'background/storage/storage',
                 'background/sync/sync'
             ]
         }),
