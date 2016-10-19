@@ -4,6 +4,10 @@ import URI from 'urijs';
 
 
 export class FirefoxExtension extends WebExtensionsExtension {
+    get origin() {
+        return 'moz-extension://' + this.id;
+    }
+
     getCallbackPattern() {
         let prefix = new URI('https://extension')
             .segmentCoded([this.key])
