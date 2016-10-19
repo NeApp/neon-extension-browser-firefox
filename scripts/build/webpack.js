@@ -255,23 +255,28 @@ function generateModules(Config, modules) {
         // Core
         'background/callback/callback': [
             ...Config.CommonRequirements,
+            ...getServices(modules, 'configuration'),
             'eon.extension.core/modules/background/callback'
         ],
         'background/relay/relay': [
             ...Config.CommonRequirements,
+            ...getServices(modules, 'configuration'),
             'eon.extension.core/modules/background/relay'
         ],
         'background/scrobble/scrobble': [
             ...Config.CommonRequirements,
+            ...getServices(modules, 'configuration'),
             ...getServices(destinations, 'destination/scrobble'),
             'eon.extension.core/modules/background/scrobble'
         ],
         'background/storage/storage': [
             ...Config.CommonRequirements,
+            ...getServices(modules, 'configuration'),
             'eon.extension.core/modules/background/storage'
         ],
         'background/sync/sync': [
             ...Config.CommonRequirements,
+            ...getServices(modules, 'configuration'),
             ...getServices(destinations, 'destination/sync'),
             'eon.extension.core/modules/background/sync'
         ],
@@ -279,7 +284,7 @@ function generateModules(Config, modules) {
         // Configuration
         'configuration/configuration': [
             ...Config.CommonRequirements,
-            ...getServices(modules, 'configuration', modules),
+            ...getServices(modules, 'configuration'),
             'eon.extension.core/modules/configuration'
         ],
 
