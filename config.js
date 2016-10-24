@@ -17,7 +17,7 @@ export const Libraries = {
         'react':                                    path.resolve(__dirname, 'node_modules/react'),
         'react-dom':                                path.resolve(__dirname, 'node_modules/react-dom'),
         'react-router':                             path.resolve(__dirname, 'node_modules/react-router'),
-        'superagent':                               path.resolve(__dirname, 'node_modules/superagent'),
+        'urijs':                                    path.resolve(__dirname, 'node_modules/urijs'),
         'uuid':                                     path.resolve(__dirname, 'node_modules/uuid'),
         'whatwg-fetch':                             path.resolve(__dirname, 'node_modules/whatwg-fetch')
     }
