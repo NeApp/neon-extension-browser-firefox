@@ -1,5 +1,6 @@
 import fs from 'fs';
 import gutil from 'gulp-util';
+import merge from 'lodash-es/merge';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import util from 'util';
@@ -284,7 +285,7 @@ function generateModules(Config, modules) {
         // Configuration
         'configuration/configuration': [
             ...Config.CommonRequirements,
-            ...getServices(modules, 'configuration'),
+            ...getServices(modules, 'configuration', { includeComponents: true }),
             'eon.extension.core/modules/configuration'
         ],
 
@@ -403,9 +404,11 @@ function getModuleServices(module) {
                 return null;
             }
 
-            // Ignore core configuration service
+            // Only include the plugin configuration service
             if(type === 'configuration') {
-                return [servicePath];
+                return [
+                    servicePath
+                ];
             }
 
             // Find matching main module
@@ -430,8 +433,13 @@ function getModuleServices(module) {
     );
 }
 
-function getServices(modules, type) {
-    return Object.keys(modules)
+function getServices(modules, type, options) {
+    options = merge({
+        includeComponents: false
+    }, options);
+
+    // Find matching service `type` in modules
+    return [].concat.apply([], Object.keys(modules)
         .map((moduleName) => {
             let module = modules[moduleName];
 
@@ -458,12 +466,23 @@ function getServices(modules, type) {
                 return null;
             }
 
-            // Found service, include in result
-            return servicePath;
+            // Build list of service modules
+            let items = [servicePath];
+
+            // - Include react components (if enabled)
+            if(options.includeComponents) {
+                let componentsPath = path.resolve(module.sourcePath, 'services/' + serviceName + '/components/index.js');
+
+                if(fs.existsSync(componentsPath)) {
+                    items.push(componentsPath);
+                }
+            }
+
+            return items;
         })
         .filter((name) => {
             return name !== null;
-        });
+        }));
 }
 
 function addStaticModule(modules, name, context) {
