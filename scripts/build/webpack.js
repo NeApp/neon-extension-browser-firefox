@@ -259,6 +259,11 @@ function generateModules(Config, modules) {
             ...getServices(modules, 'configuration'),
             'eon.extension.core/modules/background/callback'
         ],
+        'background/main/main': [
+            ...Config.CommonRequirements,
+            ...getServices(modules, 'configuration'),
+            'eon.extension.core/modules/background/main'
+        ],
         'background/relay/relay': [
             ...Config.CommonRequirements,
             ...getServices(modules, 'configuration'),
