@@ -13,6 +13,8 @@ export const Libraries = {
         'eventemitter3':                            path.resolve(__dirname, 'node_modules/eventemitter3'),
         'lodash-es':                                path.resolve(__dirname, 'node_modules/lodash-es'),
         'loose-envify':                             path.resolve(__dirname, 'node_modules/loose-envify'),
+        'pouchdb':                                  path.resolve(__dirname, 'node_modules/pouchdb'),
+        'pouchdb-find':                             path.resolve(__dirname, 'node_modules/pouchdb-find'),
         'querystring':                              path.resolve(__dirname, 'node_modules/querystring'),
         'react':                                    path.resolve(__dirname, 'node_modules/react'),
         'react-dom':                                path.resolve(__dirname, 'node_modules/react-dom'),
