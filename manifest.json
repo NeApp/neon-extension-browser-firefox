@@ -31,9 +31,5 @@
   ],
   "options_ui": {
     "page": "configuration/configuration.html?embedded"
-  },
-  "release": {
-    "date": "2016-11-13",
-    "version": "0.3.4"
   }
 }
