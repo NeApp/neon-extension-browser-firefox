@@ -5,7 +5,13 @@ import URI from 'urijs';
 
 export class FirefoxExtension extends WebExtensionsExtension {
     get origin() {
-        return 'moz-extension://' + this.id;
+        let baseUrl = browser.extension.getURL('');
+
+        if(baseUrl[baseUrl.length - 1] === '/') {
+            return baseUrl.substring(0, baseUrl.length - 1);
+        }
+
+        return baseUrl;
     }
 
     getCallbackPattern() {
