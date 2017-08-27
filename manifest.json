@@ -15,7 +15,6 @@
       "shared.js",
       "background/vendor.js",
       "background/shared.js",
-      "background/callback/callback.js",
       "background/main/main.js",
       "background/relay/relay.js",
       "background/scrobble/scrobble.js",
