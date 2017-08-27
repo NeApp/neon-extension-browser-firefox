@@ -19,9 +19,13 @@ gulp.task('build', [
     'build:development',
     'build:production',
 
+    'build:hybrid',
+    'build:hybrid:xpi',
+
     // Archive
     'build:archive:development',
     'build:archive:production',
+    'build:archive:hybrid',
 ]);
 
 gulp.task('build:clean', () => {
@@ -52,7 +56,59 @@ gulp.task('build:archive:production', ['build:production'], () => {
 
 // endregion
 
+// region build:hybrid
+
+gulp.task('build:hybrid', [
+    'build:hybrid:wrapper',
+    'build:hybrid:webextension'
+]);
+
+gulp.task('build:archive:hybrid', ['build:hybrid'], () => {
+    // Read extension manifest
+    let manifest = JSON.parse(fs.readFileSync(
+        'build/unpacked/hybrid/webextension/manifest.json'
+    ));
+
+    // Create archive of build
+    return gulp.src('build/unpacked/hybrid/**/*')
+        .pipe(gzip('Neon-' + manifest.version + '-firefox-hybrid.zip'))
+        .pipe(gulp.dest('build'));
 });
+
+gulp.task('build:hybrid:xpi:package', ['build:hybrid'], (done) => {
+    // Create xpi of build
+    exec('jpm xpi', { cwd: 'build/unpacked/hybrid' }, function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        done(err);
+    });
+});
+
+gulp.task('build:hybrid:xpi', ['build:hybrid:xpi:package'], () => {
+    // Read extension manifest
+    let manifest = JSON.parse(fs.readFileSync(
+        'build/unpacked/hybrid/webextension/manifest.json'
+    ));
+
+    // Copy xpi to build directory
+    return gulp.src('build/unpacked/hybrid/*.xpi')
+        .pipe(rename('Neon-' + manifest.version + '-firefox-hybrid.xpi'))
+        .pipe(gulp.dest('build'));
+});
+
+gulp.task('build:hybrid:wrapper', ['build:clean'], () => {
+    // Copy wrapper files
+    return gulp.src('src_hybrid/**/*')
+        .pipe(gulp.dest('build/unpacked/hybrid'));
+});
+
+gulp.task('build:hybrid:webextension', ['build:production'], () => {
+    // Copy production build
+    return gulp.src('build/unpacked/production/**/*')
+        .pipe(gulp.dest('build/unpacked/hybrid/webextension'));
+});
+
+// endregion
 
 // region build:development
 
