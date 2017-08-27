@@ -259,6 +259,12 @@ function generateModules(Config, modules) {
             ...getServices(modules, 'configuration'),
             'eon.extension.core/modules/background/main'
         ],
+        'background/migrate/migrate': [
+            ...Config.CommonRequirements,
+            ...getServices(modules, 'configuration'),
+            ...getServices(modules, 'migrate'),
+            'eon.extension.core/modules/background/migrate'
+        ],
         'background/relay/relay': [
             ...Config.CommonRequirements,
             ...getServices(modules, 'configuration'),
@@ -391,6 +397,10 @@ function getModuleServices(module) {
     // Retrieve module services
     return [].concat.apply([], module.services
         .map((type) => {
+            if(type === 'migrate') {
+                return null;
+            }
+
             // Build service name
             let serviceName = type.substring(type.indexOf('/') + 1);
 

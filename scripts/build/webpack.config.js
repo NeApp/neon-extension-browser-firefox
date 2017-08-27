@@ -114,6 +114,7 @@ export default {
             },
             chunks: [
                 'background/main/main',
+                'background/migrate/migrate',
                 'background/relay/relay',
                 'background/scrobble/scrobble',
                 'background/storage/storage',
