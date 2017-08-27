@@ -12,6 +12,7 @@
   },
 
   "globals": {
+    "browser": true,
     "document": false,
     "escape": false,
     "navigator": false,
