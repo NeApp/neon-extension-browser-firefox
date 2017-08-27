@@ -57,18 +57,18 @@ export const Modules = {
         path: '../../Destinations',
 
         children: {
-            'eon.extension.destination.googledrive':    './eon.extension.destination.googledrive',
+            // 'eon.extension.destination.googledrive':    './eon.extension.destination.googledrive',
             'eon.extension.destination.lastfm':         './eon.extension.destination.lastfm',
-            'eon.extension.destination.trakt':          './eon.extension.destination.trakt',
+            // 'eon.extension.destination.trakt':          './eon.extension.destination.trakt',
         }
     },
     Sources: {
         path: '../../Sources',
 
         children: {
-            'eon.extension.source.amazonvideo':         './eon.extension.source.amazonvideo',
+            // 'eon.extension.source.amazonvideo':         './eon.extension.source.amazonvideo',
             'eon.extension.source.googlemusic':         './eon.extension.source.googlemusic',
-            'eon.extension.source.netflix':             './eon.extension.source.netflix'
+            // 'eon.extension.source.netflix':             './eon.extension.source.netflix'
         }
     }
 };
