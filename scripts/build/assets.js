@@ -21,7 +21,9 @@ function buildModule(module) {
     let moduleAssetsPath = path.join(module.path, 'assets');
 
     return copy(moduleAssetsPath, BuildDirectory.Unpacked.Development, [
-        '**/*.html'
+        '**/*.html',
+        '**/*.png',
+        '**/*.svg'
     ]);
 }
 
