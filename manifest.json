@@ -1,14 +1,21 @@
 {
-  "manifest_version": 2,
-  "name": "Eon Alpha",
-  "description": "TODO",
+  "name": "Neon",
+  "description": "Neon",
   "version": "1.0.0-beta",
+  "manifest_version": 2,
+
   "applications": {
     "gecko": {
-      "id": "{8ca8d62e-4451-4542-bdb1-7b3041ace5e7}",
-      "strict_min_version": "42.0"
+      "id": "jid1-rbAJu4BHjMqTww@jetpack",
+      "strict_min_version": "51.0a1"
     }
   },
+  "options_ui": {
+    "page": "configuration/configuration.html",
+    "open_in_tab": true
+  },
+  "permissions": [],
+
   "background": {
     "scripts": [
       "vendor.js",
@@ -23,14 +30,7 @@
       "background/sync/sync.js"
     ]
   },
-  "permissions": [
-    "webRequest"
-  ],
   "web_accessible_resources": [
     "configuration/configuration.html"
-  ],
-  "options_ui": {
-    "page": "configuration/configuration.html",
-    "open_in_tab": true
-  }
+  ]
 }
