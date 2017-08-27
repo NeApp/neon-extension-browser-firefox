@@ -30,6 +30,7 @@
     "configuration/configuration.html"
   ],
   "options_ui": {
-    "page": "configuration/configuration.html?embedded"
+    "page": "configuration/configuration.html",
+    "open_in_tab": true
   }
 }
