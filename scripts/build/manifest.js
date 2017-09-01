@@ -25,6 +25,7 @@ export function build(Config) {
         let manifest = merge({
             content_scripts: [],
             permissions: [],
+            optional_permissions: [],
             web_accessible_resources: []
         }, JSON.parse(fs.readFileSync(manifestPath)));
 
@@ -69,34 +70,9 @@ function mergeModuleManifest(manifest, module) {
         content_scripts: [],
         web_accessible_resources: [],
 
-        permissions: {
-            origins: [],
-            permissions: []
-        }
+        origins: [],
+        permissions: []
     }, JSON.parse(fs.readFileSync(manifestPath)));
-
-    // Build dictionary of required origins
-    let moduleOrigins = {};
-
-    moduleManifest['permissions']['origins'].forEach((origin) => {
-        moduleOrigins[origin] = true;
-    });
-
-    moduleManifest['content_scripts'].forEach((contentScript) => {
-        if(!isDefined(contentScript) || !isDefined(contentScript.conditions)) {
-            console.warn('Invalid content script definition:', contentScript);
-            return;
-        }
-
-        contentScript.conditions.forEach((condition) => {
-            if(!isDefined(condition) || !isDefined(condition.pattern)) {
-                console.warn('Invalid content script condition:', condition);
-                return;
-            }
-
-            moduleOrigins[condition.pattern] = true;
-        });
-    });
 
     // Return manifest merged with module properties
     return {
@@ -112,8 +88,8 @@ function mergeModuleManifest(manifest, module) {
 
         'permissions': [
             ...manifest['permissions'],
-            ...moduleManifest['permissions']['permissions'],
-            ...Object.keys(moduleOrigins)
+            ...moduleManifest['origins'],
+            ...moduleManifest['permissions']
         ],
 
         'web_accessible_resources': [
