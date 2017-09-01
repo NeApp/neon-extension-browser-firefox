@@ -306,7 +306,7 @@ function generateModules(Config, modules) {
         ...Object.assign({}, ...Object.keys(sources)
             .map((moduleName) => {
                 return {
-                    ...getModule(Config, sources[moduleName]),
+                    ...getModule(Config, modules, sources[moduleName]),
                     ...getModuleChildren(Config, sources[moduleName])
                 };
             })
@@ -314,7 +314,7 @@ function generateModules(Config, modules) {
     };
 }
 
-function getModule(Config, module) {
+function getModule(Config, modules, module) {
     let name = module.name.replace('eon.extension.', '');
 
     // Parse module name
@@ -336,6 +336,7 @@ function getModule(Config, module) {
 
     result[type + '/' + plugin + '/' + plugin] = [
         ...Config.CommonRequirements,
+        ...getServices([modules['eon.extension.core']], 'configuration'),
         ...getModuleServices(module)
     ];
 
