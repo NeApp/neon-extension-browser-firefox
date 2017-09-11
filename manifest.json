@@ -22,12 +22,10 @@
       "shared.js",
       "background/vendor.js",
       "background/shared.js",
+      "background/messaging/messaging.js",
       "background/main/main.js",
       "background/migrate/migrate.js",
-      "background/relay/relay.js",
-      "background/scrobble/scrobble.js",
-      "background/storage/storage.js",
-      "background/sync/sync.js"
+      "background/scrobble/scrobble.js"
     ]
   },
   "web_accessible_resources": [
