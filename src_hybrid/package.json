@@ -3,8 +3,8 @@
   "version": "1.0.0-beta",
   "main": "./main.js",
   "name": "gmusicscrobbler",
-  "title": "Google Music Scrobbler",
-  "description": "Google Play Music last.fm scrobbler",
+  "title": "Neon",
+  "description": "Neon",
   "author": "Dean Gardiner",
   "license": "MPL 2.0",
 
