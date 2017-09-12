@@ -114,9 +114,11 @@ export default {
             },
             chunks: [
                 'background/main/main',
-                'background/messaging/messaging',
                 'background/migrate/migrate',
-                'background/scrobble/scrobble',
+
+                'background/messaging/messaging',
+                'background/messaging/services/scrobble',
+                'background/messaging/services/storage'
             ]
         }),
         new webpack.optimize.CommonsChunkPlugin({

@@ -253,16 +253,10 @@ function generateModules(Config, modules) {
     let sources = listModuleType(Config.Modules.Sources);
 
     return {
-        // Core
         'background/main/main': [
             ...Config.CommonRequirements,
             ...getServices(modules, 'configuration'),
             'eon.extension.core/modules/background/main'
-        ],
-        'background/messaging/messaging': [
-            ...Config.CommonRequirements,
-            ...getServices(modules, 'configuration'),
-            'eon.extension.core/modules/background/messaging'
         ],
         'background/migrate/migrate': [
             ...Config.CommonRequirements,
@@ -270,28 +264,52 @@ function generateModules(Config, modules) {
             ...getServices(modules, 'migrate'),
             'eon.extension.core/modules/background/migrate'
         ],
-        'background/scrobble/scrobble': [
+
+        //
+        // Messaging
+        //
+
+        'background/messaging/messaging': [
+            ...Config.CommonRequirements,
+            ...getServices(modules, 'configuration'),
+            'eon.extension.core/modules/background/messaging'
+        ],
+        'background/messaging/services/scrobble': [
             ...Config.CommonRequirements,
             ...getServices(modules, 'configuration'),
             ...getServices(destinations, 'destination/scrobble'),
-            'eon.extension.core/modules/background/scrobble'
+            'eon.extension.core/modules/background/messaging/services/scrobble'
+        ],
+        'background/messaging/services/storage': [
+            ...Config.CommonRequirements,
+            ...getServices(modules, 'configuration'),
+            'eon.extension.core/modules/background/messaging/services/storage'
         ],
 
+        //
         // Configuration
+        //
+
         'configuration/configuration': [
             ...Config.CommonRequirements,
             ...getServices(modules, 'configuration', { includeComponents: true }),
             'eon.extension.core/modules/configuration'
         ],
 
+        //
         // Destinations
+        //
+
         ...Object.assign({}, ...Object.keys(destinations)
             .map((moduleName) => {
                 return getModuleChildren(Config, destinations[moduleName]) || {};
             })
         ),
 
+        //
         // Sources
+        //
+
         ...Object.assign({}, ...Object.keys(sources)
             .map((moduleName) => {
                 return {
