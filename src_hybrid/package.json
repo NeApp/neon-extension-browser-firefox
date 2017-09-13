@@ -1,6 +1,6 @@
 {
   "id": "jid1-rbAJu4BHjMqTww@jetpack",
-  "version": "1.0.0-beta",
+  "version": "1.1.0-beta",
   "main": "./main.js",
   "name": "gmusicscrobbler",
   "title": "Neon",
