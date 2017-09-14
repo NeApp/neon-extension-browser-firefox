@@ -15,7 +15,10 @@
     "browser_style": false,
     "open_in_tab": true
   },
-  "permissions": [],
+  "permissions": [
+    "*://neon.self.skipthe.net/*",
+    "webRequest"
+  ],
 
   "background": {
     "scripts": [
