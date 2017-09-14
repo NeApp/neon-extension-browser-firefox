@@ -253,6 +253,11 @@ function generateModules(Config, modules) {
     let sources = listModuleType(Config.Modules.Sources);
 
     return {
+        'background/callback/callback': [
+            ...Config.CommonRequirements,
+            ...getServices(modules, 'configuration'),
+            'eon.extension.core/modules/background/callback'
+        ],
         'background/main/main': [
             ...Config.CommonRequirements,
             ...getServices(modules, 'configuration'),

@@ -113,6 +113,7 @@ export default {
                 return true;
             },
             chunks: [
+                'background/callback/callback',
                 'background/main/main',
                 'background/migrate/migrate',
 
