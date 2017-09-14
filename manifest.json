@@ -23,9 +23,11 @@
       "shared.js",
       "background/vendor.js",
       "background/shared.js",
+
       "background/messaging/messaging.js",
-      "background/messaging/services/scrobble.js",
       "background/messaging/services/storage.js",
+      "background/messaging/services/scrobble.js",
+
       "background/main/main.js",
       "background/migrate/migrate.js"
     ]
