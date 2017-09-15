@@ -172,6 +172,11 @@ export default {
             ]
         }),
 
+        new webpack.ProvidePlugin({
+            '$': 'jquery',
+            'jQuery': 'jquery'
+        }),
+
         new ExtractTextPlugin('[name].css', {
             allChunks: true
         })
@@ -187,6 +192,14 @@ export default {
 
             'eon.extension.browser.base.webextensions': path.resolve(
                 projectPath, 'Browsers/eon.extension.browser.base.webextensions/src'
+            ),
+
+            'jquery': path.resolve(
+                projectPath, 'eon.extension.core/bower_components/jquery/src/jquery'
+            ),
+
+            'foundation': path.resolve(
+                projectPath, 'eon.extension.core/bower_components/foundation-sites/js'
             )
         }
     },
@@ -197,7 +210,7 @@ export default {
 
     sassLoader: {
         includePaths: [
-            path.resolve(projectPath, 'eon.extension.core/bower_components')
+            path.resolve(projectPath, 'eon.extension.core/bower_components/foundation-sites/scss')
         ]
     }
 };

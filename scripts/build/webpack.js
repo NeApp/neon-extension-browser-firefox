@@ -184,6 +184,14 @@ export function generateConfiguration(Config) {
                 ...Base.module.loaders,
 
                 {
+                    loader: 'imports?this=>window',
+                    test: /\.js$/,
+
+                    include: [
+                        path.resolve(projectPath, 'eon.extension.core/bower_components/foundation-sites/js')
+                    ]
+                },
+                {
                     loader: 'babel',
                     test: /\.js$/,
 
@@ -192,7 +200,11 @@ export function generateConfiguration(Config) {
                         presets: ['es2015', 'react']
                     },
 
-                    include: esIncludes
+                    include: [
+                        path.resolve(projectPath, 'eon.extension.core/bower_components/foundation-sites/js'),
+
+                        ...esIncludes
+                    ]
                 }
             ]
         },
