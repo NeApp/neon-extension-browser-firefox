@@ -308,6 +308,9 @@ function generateModules(Config, modules) {
         //
 
         'configuration/configuration': [
+            // Ensure CSS Dependencies are bundled first
+            'eon.extension.core/modules/configuration/dependencies.scss',
+
             ...Config.CommonRequirements,
             ...getServices(modules, 'configuration', { includeComponents: true }),
             'eon.extension.core/modules/configuration'
