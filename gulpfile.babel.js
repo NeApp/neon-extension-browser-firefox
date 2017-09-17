@@ -15,40 +15,31 @@ import {BuildDirectory, buildDistributionName} from './scripts/build/core/helper
 
 
 gulp.task('build', [
-    'build:clean',
-
-    // Development
     'build:development',
-    'build:development:hybrid',
-    'build:development:hybrid:xpi',
-
-    'build:archive:development',
-    'build:archive:development:hybrid',
-
-    // Production
-    'build:production',
-    'build:production:hybrid',
-    'build:production:hybrid:xpi',
-
-    'build:archive:production',
-    'build:archive:production:hybrid',
+    'build:production'
 ]);
-
-gulp.task('build:clean', () => {
-    return del([
-        __dirname + '/build/**/*'
-    ]);
-});
 
 // region build:production
 
 gulp.task('build:production', [
-    'build:production:assets',
-    'build:production:manifest',
-    'build:production:webpack'
+    'clean:production',
+
+    'webextension:production',
+    'hybrid:production'
 ]);
 
-gulp.task('build:archive:production', ['build:production'], () => {
+gulp.task('clean:production', () => {
+    return del([
+        __dirname + '/build/production/**/*'
+    ]);
+});
+
+gulp.task('webextension:production', [
+    'clean:production',
+    'webextension:production:assets',
+    'webextension:production:manifest',
+    'webextension:production:package'
+], () => {
     // Read extension manifest
     let manifest = JSON.parse(fs.readFileSync(path.join(
         BuildDirectory.Production.Unpacked,
@@ -61,7 +52,7 @@ gulp.task('build:archive:production', ['build:production'], () => {
         .pipe(gulp.dest(BuildDirectory.Production.Root));
 });
 
-gulp.task('build:production:assets', ['build:clean'], (callback) => {
+gulp.task('webextension:production:assets', ['clean:production'], (callback) => {
     Assets.build(Configuration, {
         outputPath: BuildDirectory.Production.Unpacked
     }).then(
@@ -72,7 +63,7 @@ gulp.task('build:production:assets', ['build:clean'], (callback) => {
     );
 });
 
-gulp.task('build:production:manifest', ['build:clean'], (callback) => {
+gulp.task('webextension:production:manifest', ['clean:production'], (callback) => {
     Manifest.build(Configuration, {
         outputPath: BuildDirectory.Production.Unpacked
     }).then(
@@ -81,13 +72,18 @@ gulp.task('build:production:manifest', ['build:clean'], (callback) => {
     );
 });
 
-gulp.task('build:production:webpack', ['build:clean'], (callback) => {
+gulp.task('webextension:production:package', ['clean:production'], (callback) => {
     Webpack.build(Configuration, {
         rootPath: BuildDirectory.Production.Root,
         outputPath: BuildDirectory.Production.Unpacked,
 
         environment: 'production',
-        uglify: true
+
+        uglify: {
+            compress: {
+                warnings: false
+            }
+        }
     }).then(
         (stats) => {
             gutil.log(stats.toString('normal'));
@@ -97,12 +93,17 @@ gulp.task('build:production:webpack', ['build:clean'], (callback) => {
     );
 });
 
-gulp.task('build:production:hybrid', [
-    'build:production:hybrid:wrapper',
-    'build:production:hybrid:webextension'
+gulp.task('hybrid:production', [
+    'clean:production',
+    'hybrid:production:package',
+    'hybrid:production:xpi'
 ]);
 
-gulp.task('build:archive:production:hybrid', ['build:production:hybrid'], () => {
+gulp.task('hybrid:production:package', [
+    'clean:production',
+    'hybrid:production:wrapper',
+    'hybrid:production:webextension'
+], () => {
     // Read extension manifest
     let manifest = JSON.parse(fs.readFileSync(path.join(
         BuildDirectory.Production.Hybrid,
@@ -117,7 +118,19 @@ gulp.task('build:archive:production:hybrid', ['build:production:hybrid'], () => 
         .pipe(gulp.dest(BuildDirectory.Production.Root));
 });
 
-gulp.task('build:production:hybrid:xpi:package', ['build:production:hybrid'], (done) => {
+gulp.task('hybrid:production:wrapper', ['clean:production'], () => {
+    // Copy wrapper files
+    return gulp.src('src_hybrid/**/*')
+        .pipe(gulp.dest(BuildDirectory.Production.Hybrid));
+});
+
+gulp.task('hybrid:production:webextension', ['webextension:production'], () => {
+    // Copy production build
+    return gulp.src(path.join(BuildDirectory.Production.Unpacked, '**/*'))
+        .pipe(gulp.dest(path.join(BuildDirectory.Production.Hybrid, 'webextension')));
+});
+
+gulp.task('hybrid:production:xpi:build', ['hybrid:production:package'], (done) => {
     // Create xpi of build
     exec('jpm xpi', { cwd: BuildDirectory.Production.Hybrid }, function (err, stdout, stderr) {
         console.log(stdout);
@@ -126,7 +139,7 @@ gulp.task('build:production:hybrid:xpi:package', ['build:production:hybrid'], (d
     });
 });
 
-gulp.task('build:production:hybrid:xpi', ['build:production:hybrid:xpi:package'], () => {
+gulp.task('hybrid:production:xpi', ['hybrid:production:xpi:build'], () => {
     // Read extension manifest
     let manifest = JSON.parse(fs.readFileSync(path.join(
         BuildDirectory.Production.Hybrid,
@@ -142,29 +155,29 @@ gulp.task('build:production:hybrid:xpi', ['build:production:hybrid:xpi:package']
         .pipe(gulp.dest(BuildDirectory.Production.Root));
 });
 
-gulp.task('build:production:hybrid:wrapper', ['build:clean'], () => {
-    // Copy wrapper files
-    return gulp.src('src_hybrid/**/*')
-        .pipe(gulp.dest(BuildDirectory.Production.Hybrid));
-});
-
-gulp.task('build:production:hybrid:webextension', ['build:production'], () => {
-    // Copy production build
-    return gulp.src(path.join(BuildDirectory.Production.Unpacked, '**/*'))
-        .pipe(gulp.dest(path.join(BuildDirectory.Production.Hybrid, 'webextension')));
-});
-
 // endregion
 
 // region build:development
 
 gulp.task('build:development', [
-    'build:development:assets',
-    'build:development:manifest',
-    'build:development:webpack'
+    'clean:development',
+
+    'webextension:development',
+    'hybrid:development'
 ]);
 
-gulp.task('build:archive:development', ['build:development'], () => {
+gulp.task('clean:development', () => {
+    return del([
+        __dirname + '/build/development/**/*'
+    ]);
+});
+
+gulp.task('webextension:development', [
+    'clean:development',
+    'webextension:development:assets',
+    'webextension:development:manifest',
+    'webextension:development:package'
+], () => {
     // Read extension manifest
     let manifest = JSON.parse(fs.readFileSync(path.join(
         BuildDirectory.Development.Unpacked,
@@ -179,7 +192,7 @@ gulp.task('build:archive:development', ['build:development'], () => {
         .pipe(gulp.dest(BuildDirectory.Development.Root));
 });
 
-gulp.task('build:development:assets', ['build:clean'], (callback) => {
+gulp.task('webextension:development:assets', ['clean:development'], (callback) => {
     Assets.build(Configuration, {
         outputPath: BuildDirectory.Development.Unpacked
     }).then(
@@ -190,7 +203,7 @@ gulp.task('build:development:assets', ['build:clean'], (callback) => {
     );
 });
 
-gulp.task('build:development:manifest', ['build:clean'], (callback) => {
+gulp.task('webextension:development:manifest', ['clean:development'], (callback) => {
     Manifest.build(Configuration, {
         outputPath: BuildDirectory.Development.Unpacked
     }).then(
@@ -199,12 +212,12 @@ gulp.task('build:development:manifest', ['build:clean'], (callback) => {
     );
 });
 
-gulp.task('build:development:webpack', ['build:clean'], (callback) => {
+gulp.task('webextension:development:package', ['clean:development'], (callback) => {
     Webpack.build(Configuration, {
         rootPath: BuildDirectory.Development.Root,
         outputPath: BuildDirectory.Development.Unpacked,
 
-        devtool: 'cheap-source-map'
+        devtool: 'eval'
     }).then(
         (stats) => {
             gutil.log(stats.toString('normal'));
@@ -214,12 +227,17 @@ gulp.task('build:development:webpack', ['build:clean'], (callback) => {
     );
 });
 
-gulp.task('build:development:hybrid', [
-    'build:development:hybrid:wrapper',
-    'build:development:hybrid:webextension'
+gulp.task('hybrid:development', [
+    'clean:development',
+    'hybrid:development:package',
+    'hybrid:development:xpi'
 ]);
 
-gulp.task('build:archive:development:hybrid', ['build:development:hybrid'], () => {
+gulp.task('hybrid:development:package', [
+    'clean:development',
+    'hybrid:development:wrapper',
+    'hybrid:development:webextension'
+], () => {
     // Read extension manifest
     let manifest = JSON.parse(fs.readFileSync(path.join(
         BuildDirectory.Development.Hybrid,
@@ -235,7 +253,19 @@ gulp.task('build:archive:development:hybrid', ['build:development:hybrid'], () =
         .pipe(gulp.dest(BuildDirectory.Development.Root));
 });
 
-gulp.task('build:development:hybrid:xpi:package', ['build:development:hybrid'], (done) => {
+gulp.task('hybrid:development:wrapper', ['clean:development'], () => {
+    // Copy wrapper files
+    return gulp.src('src_hybrid/**/*')
+        .pipe(gulp.dest(BuildDirectory.Development.Hybrid));
+});
+
+gulp.task('hybrid:development:webextension', ['webextension:development'], () => {
+    // Copy development build
+    return gulp.src(path.join(BuildDirectory.Development.Unpacked, '**/*'))
+        .pipe(gulp.dest(path.join(BuildDirectory.Development.Hybrid, 'webextension')));
+});
+
+gulp.task('hybrid:development:xpi:build', ['hybrid:development:package'], (done) => {
     // Create xpi of build
     exec('jpm xpi', { cwd: BuildDirectory.Development.Hybrid }, function (err, stdout, stderr) {
         console.log(stdout);
@@ -244,7 +274,7 @@ gulp.task('build:development:hybrid:xpi:package', ['build:development:hybrid'], 
     });
 });
 
-gulp.task('build:development:hybrid:xpi', ['build:development:hybrid:xpi:package'], () => {
+gulp.task('hybrid:development:xpi', ['hybrid:development:xpi:build'], () => {
     // Read extension manifest
     let manifest = JSON.parse(fs.readFileSync(path.join(
         BuildDirectory.Development.Hybrid,
@@ -259,18 +289,6 @@ gulp.task('build:development:hybrid:xpi', ['build:development:hybrid:xpi:package
             type: 'hybrid'
         })))
         .pipe(gulp.dest(BuildDirectory.Development.Root));
-});
-
-gulp.task('build:development:hybrid:wrapper', ['build:clean'], () => {
-    // Copy wrapper files
-    return gulp.src('src_hybrid/**/*')
-        .pipe(gulp.dest(BuildDirectory.Development.Hybrid));
-});
-
-gulp.task('build:development:hybrid:webextension', ['build:development'], () => {
-    // Copy development build
-    return gulp.src(path.join(BuildDirectory.Development.Unpacked, '**/*'))
-        .pipe(gulp.dest(path.join(BuildDirectory.Development.Hybrid, 'webextension')));
 });
 
 // endregion
