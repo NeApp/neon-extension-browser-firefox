@@ -17,6 +17,7 @@
   },
   "permissions": [
     "*://neon.self.skipthe.net/*",
+    "tabs",
     "webRequest"
   ],
 
