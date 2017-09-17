@@ -1,6 +1,6 @@
 {
   "name": "eon.extension.browser.firefox",
-  "version": "1.2.1-beta",
+  "version": "1.2.2-beta",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-core": "^6.11.4",
