@@ -10,9 +10,16 @@ export const projectPath = path.join(rootPath, '../../');
 export const BuildDirectory = {
     Root: path.join(rootPath, 'build'),
 
-    Unpacked: {
-        Development: path.join(rootPath, 'build', 'unpacked', 'development'),
-        Production: path.join(rootPath, 'build', 'unpacked', 'production')
+    Development: {
+        Root:       path.join(rootPath, 'build', 'development'),
+        Unpacked:   path.join(rootPath, 'build', 'development', 'unpacked'),
+        Hybrid:     path.join(rootPath, 'build', 'development', 'hybrid')
+    },
+
+    Production: {
+        Root:       path.join(rootPath, 'build', 'production'),
+        Unpacked:   path.join(rootPath, 'build', 'production', 'unpacked'),
+        Hybrid:     path.join(rootPath, 'build', 'production', 'hybrid')
     }
 };
 
@@ -21,6 +28,29 @@ let moduleWarnings = {};
 
 export function isDefined(value) {
     return typeof value !== 'undefined' && value !== null;
+}
+
+export function buildDistributionName(version, options) {
+    options = options || {};
+
+    if(!isDefined(version)) {
+        throw new Error('Missing required parameter: version');
+    }
+
+    // Build distribution name
+    let tags = ['neon'];
+
+    if(isDefined(options.type)) {
+        tags.push(options.type);
+    }
+
+    tags.push(version);
+
+    if(isDefined(options.environment)) {
+        tags.push(options.environment);
+    }
+
+    return tags.join('-') + '.' + (options.extension || 'zip');
 }
 
 export function listModules(Modules) {

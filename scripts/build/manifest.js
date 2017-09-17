@@ -1,13 +1,22 @@
+import Merge from 'lodash-es/merge';
 import fs from 'fs';
 import gutil from 'gulp-util';
-import merge from 'lodash-es/merge';
 import mkdirp from 'mkdirp';
 import path from 'path';
 
-import {BuildDirectory, isDefined, listModules, logModuleWarning, rootPath} from './core/helpers';
+import {isDefined, listModules, logModuleWarning, rootPath} from './core/helpers';
 
 
-export function build(Config) {
+export function build(Config, options) {
+    options = Merge({
+        outputPath: null
+    }, options || {});
+
+    if(!isDefined((options.outputPath))) {
+        throw new Error('Missing required option: unpacked');
+    }
+
+    // Retrieve enabled modules
     let modules = listModules(Config.Modules);
 
     return new Promise((resolve, reject) => {
@@ -22,7 +31,7 @@ export function build(Config) {
         }
 
         // Read browser manifest
-        let manifest = merge({
+        let manifest = Merge({
             content_scripts: [],
             permissions: [],
             optional_permissions: [],
@@ -39,10 +48,10 @@ export function build(Config) {
         });
 
         // Ensure build directory exists
-        mkdirp.sync(BuildDirectory.Unpacked.Development);
+        mkdirp.sync(options.outputPath);
 
         // Save manifest to build directory
-        let destPath = path.join(BuildDirectory.Unpacked.Development, 'manifest.json');
+        let destPath = path.join(options.outputPath, 'manifest.json');
 
         fs.writeFile(destPath, JSON.stringify(manifest, null, 2), (err) => {
             if(err) {
@@ -66,7 +75,7 @@ function mergeModuleManifest(manifest, module) {
     }
 
     // Read module manifest
-    let moduleManifest = merge({
+    let moduleManifest = Merge({
         content_scripts: [],
         web_accessible_resources: [],
 

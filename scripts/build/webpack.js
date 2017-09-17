@@ -1,26 +1,41 @@
+import IsPlainObject from 'lodash-es/isPlainObject';
+import Merge from 'lodash-es/merge';
 import fs from 'fs';
 import gutil from 'gulp-util';
-import merge from 'lodash-es/merge';
 import mkdirp from 'mkdirp';
 import path from 'path';
 import util from 'util';
 import webpack from 'webpack';
 
-import {BuildDirectory, listModules, listModuleType, rootPath, projectPath} from './core/helpers';
+import {listModules, listModuleType, rootPath, projectPath, isDefined} from './core/helpers';
 import Base from './webpack.config';
+
 
 export const StaticModules = {
     Dependencies: {},
     Externals: {}
 };
 
-export function build(Config) {
+export function build(Config, options) {
+    options = Merge({
+        rootPath: null,
+        outputPath: null
+    }, options || {});
+
+    if(!isDefined((options.rootPath))) {
+        throw new Error('Missing required option: rootPath');
+    }
+
+    if(!isDefined((options.outputPath))) {
+        throw new Error('Missing required option: outputPath');
+    }
+
     return new Promise((resolve, reject) => {
         // Retrieve compiler for `config`
         let compiler;
 
         try {
-            compiler = constructCompiler(Config);
+            compiler = constructCompiler(Config, options);
         } catch(e) {
             return reject(e);
         }
@@ -37,7 +52,7 @@ export function build(Config) {
             }
 
             // Write statistics to file
-            let statisticsPath = path.join(BuildDirectory.Root, 'webpack.stats.json');
+            let statisticsPath = path.join(options.rootPath, 'webpack.stats.json');
             let statistics = JSON.stringify(stats.toJson('verbose'));
 
             return fs.writeFile(statisticsPath, statistics, function(err) {
@@ -54,22 +69,22 @@ export function build(Config) {
     });
 }
 
-export function constructCompiler(Config) {
+export function constructCompiler(Config, options) {
     // Generation configuration
     let configuration;
 
     try {
-        configuration = generateConfiguration(Config);
+        configuration = generateConfiguration(Config, options);
     } catch(e) {
         throw new Error('Unable to generate configuration: ' + e.stack);
     }
 
     // Ensure build directory exists
-    mkdirp.sync(BuildDirectory.Root);
+    mkdirp.sync(options.rootPath);
 
     // Save configuration
     fs.writeFileSync(
-        path.join(BuildDirectory.Root, 'webpack.config.js'),
+        path.join(options.rootPath, 'webpack.config.js'),
         util.inspect(configuration, {
             depth: null
         }),
@@ -82,7 +97,14 @@ export function constructCompiler(Config) {
 
 // region Configuration
 
-export function generateConfiguration(Config) {
+export function generateConfiguration(Config, options) {
+    options = Merge({
+        devtool: null,
+        environment: 'development',
+        uglify: false
+    }, options || {});
+
+    // Retrieve enabled modules
     let modules = listModules(Config.Modules);
 
     let esIncludes = [
@@ -121,9 +143,17 @@ export function generateConfiguration(Config) {
     let configuration = {
         ...Base,
 
+        devtool: options.devtool,
+
         entry: {
             ...Base.entry,
             ...generateModules(Config, modules)
+        },
+
+        output: {
+            ...Base.output,
+
+            path: options.outputPath
         },
 
         externals: [
@@ -208,6 +238,22 @@ export function generateConfiguration(Config) {
                 }
             ]
         },
+
+        plugins: [
+            ...Base.plugins,
+
+            new webpack.DefinePlugin({
+                'process.env': {
+                    'NODE_ENV': JSON.stringify(options.environment)
+                }
+            }),
+
+            ...(options.uglify ? [
+                new webpack.optimize.UglifyJsPlugin(
+                    IsPlainObject(options.uglify) ? options.uglify : {}
+                )
+            ] : [])
+        ],
 
         resolve: {
             ...Base.resolve,
@@ -472,7 +518,7 @@ function getModuleServices(module) {
 }
 
 function getServices(modules, type, options) {
-    options = merge({
+    options = Merge({
         includeComponents: false
     }, options);
 

@@ -1,26 +1,37 @@
+import Merge from 'lodash-es/merge';
 import fs from 'fs';
 import glob from 'glob';
 import mkdirp from 'mkdirp';
 import path from 'path';
 
-import {BuildDirectory, listModules} from './core/helpers';
+import {isDefined, listModules} from './core/helpers';
 
-export function build(Config) {
+
+export function build(Config, options) {
+    options = Merge({
+        outputPath: null
+    }, options || {});
+
+    if(!isDefined((options.outputPath))) {
+        throw new Error('Missing required option: unpacked');
+    }
+
+    // Retrieve enabled modules
     let modules = listModules(Config.Modules);
 
     // Ensure build directory exists
-    mkdirp.sync(BuildDirectory.Unpacked.Development);
+    mkdirp.sync(options.outputPath);
 
     // Build modules
     return Promise.all(Object.keys(modules).map((moduleName) => {
-        return buildModule(modules[moduleName]);
+        return buildModule(modules[moduleName], options);
     }));
 }
 
-function buildModule(module) {
+function buildModule(module, options) {
     let moduleAssetsPath = path.join(module.path, 'assets');
 
-    return copy(moduleAssetsPath, BuildDirectory.Unpacked.Development, [
+    return copy(moduleAssetsPath, options.outputPath, [
         '**/*.html',
         '**/*.png',
         '**/*.svg'
