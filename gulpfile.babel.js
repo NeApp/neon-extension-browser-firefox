@@ -217,7 +217,7 @@ gulp.task('webextension:development:package', ['clean:development'], (callback) 
         rootPath: BuildDirectory.Development.Root,
         outputPath: BuildDirectory.Development.Unpacked,
 
-        devtool: 'eval'
+        devtool: 'cheap-source-map'
     }).then(
         (stats) => {
             gutil.log(stats.toString('normal'));
