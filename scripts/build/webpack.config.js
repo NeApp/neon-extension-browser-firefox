@@ -132,7 +132,7 @@ export default {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'shared',
             minChunks: (module, count) => {
-                if(count < 5) {
+                if(count < 3) {
                     return false;
                 }
 
@@ -145,7 +145,11 @@ export default {
                 return true;
             },
             chunks: [
+                // Background
                 'background/shared',
+                'background/vendor',
+
+                // Configuration
                 'configuration/configuration',
 
                 // Destinations
@@ -164,7 +168,6 @@ export default {
                 return isVendorModule('vendor', module, count);
             },
             chunks: [
-                'background/vendor',
                 'shared'
             ]
         }),
