@@ -1,7 +1,19 @@
 {
   "presets": ["es2015", "react"],
   "plugins": [
-    "babel-plugin-add-module-exports",
-    "babel-plugin-transform-object-rest-spread"
+    "add-module-exports",
+    "transform-object-rest-spread",
+    ["module-resolver", {
+      "root": [
+        "../eon.extension.browser.base/node_modules"
+      ],
+      "alias": {
+        "eon.extension.browser.base": "../eon.extension.browser.base/src",
+        "eon.extension.browser.base.webextensions": "../eon.extension.browser.base.webextensions/src",
+        "eon.extension.browser.firefox": "../eon.extension.browser.firefox/src",
+
+        "eon.extension.framework": "../../eon.extension.framework/src"
+      }
+    }]
   ]
 }

@@ -11,7 +11,7 @@ require('babel-register')({
         }
 
         // Compile "lodash-es"
-        if(filename.indexOf(path.resolve(__dirname, 'node_modules/lodash-es')) === 0) {
+        if(filename.indexOf(path.join('node_modules', 'lodash-es')) >= 0) {
             return false;
         }
 

@@ -206,7 +206,7 @@ export function generateConfiguration(Config, options) {
                     test: /\.js$/,
 
                     include: esIncludes,
-                    exclude: /(node_modules|bower_components)/
+                    exclude: /(node_modules)/
                 }
             ],
 
@@ -218,7 +218,7 @@ export function generateConfiguration(Config, options) {
                     test: /\.js$/,
 
                     include: [
-                        path.resolve(projectPath, 'eon.extension.core/bower_components/foundation-sites/js')
+                        path.resolve(projectPath, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites')
                     ]
                 },
                 {
@@ -231,7 +231,8 @@ export function generateConfiguration(Config, options) {
                     },
 
                     include: [
-                        path.resolve(projectPath, 'eon.extension.core/bower_components/foundation-sites/js'),
+                        path.resolve(projectPath, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites'),
+                        path.resolve(projectPath, 'Browsers/eon.extension.browser.base/node_modules/lodash-es'),
 
                         ...esIncludes
                     ]
@@ -261,22 +262,7 @@ export function generateConfiguration(Config, options) {
             root: [
                 ...Base.resolve.root,
 
-                ...Object.keys(Config.Modules)
-                    .map((moduleTypeName) => {
-                        let moduleTypePath = path.resolve(rootPath, Config.Modules[moduleTypeName].path);
-
-                        if(!fs.existsSync(moduleTypePath)) {
-                            gutil.log(gutil.colors.red(
-                                'Ignoring module type "%s", no source directory exists at: "%s"'
-                            ), moduleTypeName, moduleTypePath);
-                            return null;
-                        }
-
-                        return moduleTypePath;
-                    })
-                    .filter((path) => {
-                        return path !== null;
-                    })
+                path.resolve(projectPath, 'Browsers/eon.extension.browser.base/node_modules')
             ],
 
             alias: {

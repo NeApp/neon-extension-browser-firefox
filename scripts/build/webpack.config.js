@@ -183,21 +183,7 @@ export default {
         root: [],
 
         alias: {
-            'eon.extension.browser.base': path.resolve(
-                projectPath, 'Browsers/eon.extension.browser.base/src'
-            ),
-
-            'eon.extension.browser.base.webextensions': path.resolve(
-                projectPath, 'Browsers/eon.extension.browser.base.webextensions/src'
-            ),
-
-            'jquery': path.resolve(
-                projectPath, 'eon.extension.core/bower_components/jquery/src/jquery'
-            ),
-
-            'foundation': path.resolve(
-                projectPath, 'eon.extension.core/bower_components/foundation-sites/js'
-            )
+            'eon.extension.browser': path.resolve(rootPath, 'src')
         }
     },
 
@@ -207,7 +193,7 @@ export default {
 
     sassLoader: {
         includePaths: [
-            path.resolve(projectPath, 'eon.extension.core/bower_components/foundation-sites/scss')
+            path.resolve(projectPath, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites/scss')
         ]
     }
 };
