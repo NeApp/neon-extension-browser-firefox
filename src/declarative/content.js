@@ -1,20 +1,6 @@
-import {
-    WebExtensionsDeclarativeContent,
-    PageStateMatcher,
-    RequestContentScript,
-    SetIcon,
-    ShowPageAction
-} from 'eon.extension.browser.base.webextensions/declarative/content';
-
 import {NotImplementedError} from 'eon.extension.framework/core/exceptions';
+import {WebExtensionsDeclarativeContent} from 'eon.extension.browser.base.webextensions/declarative/content';
 
-
-export {
-    PageStateMatcher,
-    RequestContentScript,
-    SetIcon,
-    ShowPageAction
-};
 
 export class FirefoxDeclarativeContent extends WebExtensionsDeclarativeContent {
     static get supported() {
