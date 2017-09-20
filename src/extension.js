@@ -1,5 +1,4 @@
 import {WebExtensionsExtension} from 'eon.extension.browser.base.webextensions/extension';
-
 import {isDefined} from 'eon.extension.framework/core/helpers';
 
 

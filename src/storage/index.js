@@ -1,6 +1,5 @@
-import {WebExtensionsStorage} from 'eon.extension.browser.base.webextensions/storage';
-
 import FirefoxExtension from 'eon.extension.browser.firefox/extension';
+import {WebExtensionsStorage} from 'eon.extension.browser.base.webextensions/storage';
 
 
 export class FirefoxStorage extends WebExtensionsStorage {
