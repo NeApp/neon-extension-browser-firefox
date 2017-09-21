@@ -1,14 +1,16 @@
+import Filesystem from 'fs';
+import GulpUtil from 'gulp-util';
 import IsPlainObject from 'lodash-es/isPlainObject';
 import Merge from 'lodash-es/merge';
-import fs from 'fs';
-import gutil from 'gulp-util';
-import mkdirp from 'mkdirp';
-import path from 'path';
-import util from 'util';
-import webpack from 'webpack';
+import Mkdirp from 'mkdirp';
+import Path from 'path';
+import Util from 'util';
+import Webpack from 'webpack';
 
-import {listModules, listModuleType, rootPath, projectPath, isDefined} from './core/helpers';
 import Base from './webpack.config';
+import Constants from './core/constants';
+import Module from './core/module';
+import {isDefined} from './core/helpers';
 
 
 export const StaticModules = {
@@ -16,7 +18,7 @@ export const StaticModules = {
     Externals: {}
 };
 
-export function build(Config, options) {
+export function build(Build, options) {
     options = Merge({
         rootPath: null,
         outputPath: null
@@ -35,7 +37,7 @@ export function build(Config, options) {
         let compiler;
 
         try {
-            compiler = constructCompiler(Config, options);
+            compiler = constructCompiler(Build, options);
         } catch(e) {
             return reject(e);
         }
@@ -52,12 +54,12 @@ export function build(Config, options) {
             }
 
             // Write statistics to file
-            let statisticsPath = path.join(options.rootPath, 'webpack.stats.json');
+            let statisticsPath = Path.join(options.rootPath, 'webpack.stats.json');
             let statistics = JSON.stringify(stats.toJson('verbose'));
 
-            return fs.writeFile(statisticsPath, statistics, function(err) {
+            return Filesystem.writeFile(statisticsPath, statistics, function(err) {
                 if(err) {
-                    gutil.log(gutil.colors.red(
+                    GulpUtil.log(GulpUtil.colors.red(
                         'Unable to write statistics: %s'
                     ), err.stack);
                     return;
@@ -69,35 +71,35 @@ export function build(Config, options) {
     });
 }
 
-export function constructCompiler(Config, options) {
+export function constructCompiler(Build, options) {
     // Generation configuration
     let configuration;
 
     try {
-        configuration = generateConfiguration(Config, options);
+        configuration = generateConfiguration(Build, options);
     } catch(e) {
         throw new Error('Unable to generate configuration: ' + e.stack);
     }
 
     // Ensure build directory exists
-    mkdirp.sync(options.rootPath);
+    Mkdirp.sync(options.rootPath);
 
     // Save configuration
-    fs.writeFileSync(
-        path.join(options.rootPath, 'webpack.config.js'),
-        util.inspect(configuration, {
+    Filesystem.writeFileSync(
+        Path.join(options.rootPath, 'webpack.config.js'),
+        Util.inspect(configuration, {
             depth: null
         }),
         'utf-8'
     );
 
     // Construct compiler
-    return webpack(configuration);
+    return Webpack(configuration);
 }
 
 // region Configuration
 
-export function generateConfiguration(Config, options) {
+export function generateConfiguration(Build, options) {
     options = Merge({
         devtool: null,
         environment: 'development',
@@ -105,8 +107,9 @@ export function generateConfiguration(Config, options) {
     }, options || {});
 
     // Retrieve enabled modules
-    let modules = listModules(Config.Modules);
+    let modules = Module.list(Build.modules);
 
+    // Build ES6 Includes List
     let esIncludes = [
         ...([].concat.apply([], Object.keys(modules)
             .map((moduleName) => {
@@ -116,10 +119,10 @@ export function generateConfiguration(Config, options) {
                     module.sourcePath,
                     ...((module.babel || {}).include || [])
                         .map((value) => {
-                            let includePath = path.resolve(module.path, value);
+                            let includePath = Path.resolve(module.path, value);
 
-                            if(!fs.existsSync(includePath)) {
-                                gutil.log(gutil.colors.red(
+                            if(!Filesystem.existsSync(includePath)) {
+                                GulpUtil.log(GulpUtil.colors.red(
                                     'Ignoring babel include "%s" for module ' +
                                     '"%s", no directory exists at: "%s"'
                                 ), value, moduleName, includePath);
@@ -147,7 +150,7 @@ export function generateConfiguration(Config, options) {
 
         entry: {
             ...Base.entry,
-            ...generateModules(Config, modules)
+            ...generateModules(Build, modules)
         },
 
         output: {
@@ -171,7 +174,7 @@ export function generateConfiguration(Config, options) {
                 }
 
                 // Ignore absolute paths
-                if(path.isAbsolute(request)) {
+                if(Path.isAbsolute(request)) {
                     return callback();
                 }
 
@@ -218,7 +221,7 @@ export function generateConfiguration(Config, options) {
                     test: /\.js$/,
 
                     include: [
-                        path.resolve(projectPath, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites')
+                        Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites')
                     ]
                 },
                 {
@@ -226,13 +229,13 @@ export function generateConfiguration(Config, options) {
                     test: /\.js$/,
 
                     query: {
-                        cacheDirectory: path.join(rootPath, '.babel/cache'),
+                        cacheDirectory: Path.join(Constants.RootDirectory, '.babel/cache'),
                         presets: ['es2015', 'react']
                     },
 
                     include: [
-                        path.resolve(projectPath, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites'),
-                        path.resolve(projectPath, 'Browsers/eon.extension.browser.base/node_modules/lodash-es'),
+                        Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites'),
+                        Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/lodash-es'),
 
                         ...esIncludes
                     ]
@@ -243,14 +246,14 @@ export function generateConfiguration(Config, options) {
         plugins: [
             ...Base.plugins,
 
-            new webpack.DefinePlugin({
+            new Webpack.DefinePlugin({
                 'process.env': {
                     'NODE_ENV': JSON.stringify(options.environment)
                 }
             }),
 
             ...(options.uglify ? [
-                new webpack.optimize.UglifyJsPlugin(
+                new Webpack.optimize.UglifyJsPlugin(
                     IsPlainObject(options.uglify) ? options.uglify : {}
                 )
             ] : [])
@@ -262,7 +265,7 @@ export function generateConfiguration(Config, options) {
             root: [
                 ...Base.resolve.root,
 
-                path.resolve(projectPath, 'Browsers/eon.extension.browser.base/node_modules')
+                Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules')
             ],
 
             alias: {
@@ -277,7 +280,7 @@ export function generateConfiguration(Config, options) {
                         };
 
                         // Add module alias
-                        alias[moduleName] = path.resolve(module.sourcePath);
+                        alias[moduleName] = Path.resolve(module.sourcePath);
 
                         return alias;
                     })
@@ -292,23 +295,35 @@ export function generateConfiguration(Config, options) {
     return configuration;
 }
 
-function generateModules(Config, modules) {
-    let destinations = listModuleType(Config.Modules.Destinations);
-    let sources = listModuleType(Config.Modules.Sources);
+function generateModules(Build, modules) {
+    // Retrieve destinations
+    let destinations = Module.listDestinations(Build.modules.destinations);
 
+    if(Object.keys(destinations).length < 1) {
+        throw new Error('At least one destination is required');
+    }
+
+    // Retrieve sources
+    let sources = Module.listSources(Build.modules.sources);
+
+    if(Object.keys(sources).length < 1) {
+        throw new Error('At least one source is required');
+    }
+
+    // Build modules list
     return {
         'background/callback/callback': [
-            ...Config.CommonRequirements,
+            ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
             'eon.extension.core/modules/background/callback'
         ],
         'background/main/main': [
-            ...Config.CommonRequirements,
+            ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
             'eon.extension.core/modules/background/main'
         ],
         'background/migrate/migrate': [
-            ...Config.CommonRequirements,
+            ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
             ...getServices(modules, 'migrate'),
             'eon.extension.core/modules/background/migrate'
@@ -319,18 +334,18 @@ function generateModules(Config, modules) {
         //
 
         'background/messaging/messaging': [
-            ...Config.CommonRequirements,
+            ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
             'eon.extension.core/modules/background/messaging'
         ],
         'background/messaging/services/scrobble': [
-            ...Config.CommonRequirements,
+            ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
             ...getServices(destinations, 'destination/scrobble'),
             'eon.extension.core/modules/background/messaging/services/scrobble'
         ],
         'background/messaging/services/storage': [
-            ...Config.CommonRequirements,
+            ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
             'eon.extension.core/modules/background/messaging/services/storage'
         ],
@@ -343,7 +358,7 @@ function generateModules(Config, modules) {
             // Ensure CSS Dependencies are bundled first
             'eon.extension.core/modules/configuration/dependencies.scss',
 
-            ...Config.CommonRequirements,
+            ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration', { includeComponents: true }),
             'eon.extension.core/modules/configuration'
         ],
@@ -354,7 +369,7 @@ function generateModules(Config, modules) {
 
         ...Object.assign({}, ...Object.keys(destinations)
             .map((moduleName) => {
-                return getModuleChildren(Config, destinations[moduleName]) || {};
+                return getModuleChildren(destinations[moduleName]) || {};
             })
         ),
 
@@ -365,23 +380,21 @@ function generateModules(Config, modules) {
         ...Object.assign({}, ...Object.keys(sources)
             .map((moduleName) => {
                 return {
-                    ...getModule(Config, modules, sources[moduleName]),
-                    ...getModuleChildren(Config, sources[moduleName])
+                    ...getModule(modules, sources[moduleName]),
+                    ...getModuleChildren(sources[moduleName])
                 };
             })
         )
     };
 }
 
-function getModule(Config, modules, module) {
-    let name = module.name.replace('eon.extension.', '');
-
+function getModule(modules, module) {
     // Parse module name
     let moduleName = module.name.replace('eon.extension.', '');
     let splitAt = moduleName.indexOf('.');
 
     if(splitAt < 0) {
-        gutil.log(gutil.colors.red(
+        GulpUtil.log(GulpUtil.colors.red(
             'Invalid value provided for the "module.name" parameter: %O'
         ), module.name);
         return null;
@@ -394,7 +407,7 @@ function getModule(Config, modules, module) {
     let result = {};
 
     result[type + '/' + plugin + '/' + plugin] = [
-        ...Config.CommonRequirements,
+        ...Constants.CommonRequirements,
         ...getServices([modules['eon.extension.core']], 'configuration'),
         ...getModuleServices(module)
     ];
@@ -402,17 +415,17 @@ function getModule(Config, modules, module) {
     return result;
 }
 
-function getModuleChildren(Config, module) {
+function getModuleChildren(module) {
     // Validate `module` object
     if(typeof module === 'undefined' || module === null) {
-        gutil.log(gutil.colors.red(
+        GulpUtil.log(GulpUtil.colors.red(
             'Invalid value provided for the "module" parameter: %O'
         ), module);
         return null;
     }
 
     if(typeof module.name === 'undefined' || module.name === null) {
-        gutil.log(gutil.colors.red(
+        GulpUtil.log(GulpUtil.colors.red(
             'Invalid value provided for the "module" parameter: %O'
         ), module);
         return null;
@@ -423,7 +436,7 @@ function getModuleChildren(Config, module) {
     let splitAt = moduleName.indexOf('.');
 
     if(splitAt < 0) {
-        gutil.log(gutil.colors.red(
+        GulpUtil.log(GulpUtil.colors.red(
             'Invalid value provided for the "module.name" parameter: %O'
         ), module.name);
         return null;
@@ -437,7 +450,7 @@ function getModuleChildren(Config, module) {
 
     (module.children || []).forEach((name) => {
         result[type + '/' + plugin + '/' + name + '/' + name] = [
-            ...Config.CommonRequirements,
+            ...Constants.CommonRequirements,
             module.name + '/modules/' + name
         ];
     });
@@ -465,10 +478,10 @@ function getModuleServices(module) {
             let serviceName = type.substring(type.indexOf('/') + 1);
 
             // Ensure service module exists
-            let servicePath = path.resolve(module.sourcePath, 'services/' + serviceName + '/index.js');
+            let servicePath = Path.resolve(module.sourcePath, 'services/' + serviceName + '/index.js');
 
-            if(!fs.existsSync(servicePath)) {
-                gutil.log(gutil.colors.red(
+            if(!Filesystem.existsSync(servicePath)) {
+                GulpUtil.log(GulpUtil.colors.red(
                     'Ignoring service "%s" for module "%s", no file exists at: "%s"'
                 ), serviceName, module.name, servicePath);
                 return null;
@@ -482,10 +495,10 @@ function getModuleServices(module) {
             }
 
             // Find matching main module
-            let mainPath = path.resolve(projectPath, 'eon.extension.core/src/modules/' + type + '/index.js');
+            let mainPath = Path.resolve(Constants.ProjectDirectory, 'eon.extension.core/src/modules/' + type + '/index.js');
 
-            if(!fs.existsSync(mainPath)) {
-                gutil.log(gutil.colors.red(
+            if(!Filesystem.existsSync(mainPath)) {
+                GulpUtil.log(GulpUtil.colors.red(
                     'Ignoring service "%s" for module "%s", unable to find main module at: "%s"'
                 ), serviceName, module.name, mainPath);
                 return null;
@@ -527,10 +540,10 @@ function getServices(modules, type, options) {
             let serviceName = type.substring(type.indexOf('/'));
 
             // Ensure service exists
-            let servicePath = path.resolve(module.sourcePath, 'services/' + serviceName + '/index.js');
+            let servicePath = Path.resolve(module.sourcePath, 'services/' + serviceName + '/index.js');
 
-            if(!fs.existsSync(servicePath)) {
-                gutil.log(gutil.colors.red(
+            if(!Filesystem.existsSync(servicePath)) {
+                GulpUtil.log(GulpUtil.colors.red(
                     'Ignoring service "%s" for module "%s", no file exists at: "%s"'
                 ), serviceName, moduleName, servicePath);
                 return null;
@@ -541,9 +554,9 @@ function getServices(modules, type, options) {
 
             // - Include react components (if enabled)
             if(options.includeComponents) {
-                let componentsPath = path.resolve(module.sourcePath, 'services/' + serviceName + '/components/index.js');
+                let componentsPath = Path.resolve(module.sourcePath, 'services/' + serviceName + '/components/index.js');
 
-                if(fs.existsSync(componentsPath)) {
+                if(Filesystem.existsSync(componentsPath)) {
                     items.push(componentsPath);
                 }
             }
@@ -557,7 +570,7 @@ function getServices(modules, type, options) {
 
 function addStaticModule(modules, name, context) {
     if(context.indexOf('eon.') === -1) {
-        gutil.log(gutil.colors.red(
+        GulpUtil.log(GulpUtil.colors.red(
             'Unable to find "eon." in context: %o'
         ), context);
         return;

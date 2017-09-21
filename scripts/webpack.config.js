@@ -1,15 +1,15 @@
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import gutil from 'gulp-util';
-import path from 'path';
-import webpack from 'webpack';
+import GulpUtil from 'gulp-util';
+import Path from 'path';
+import Webpack from 'webpack';
 
-import {projectPath, rootPath} from './core/helpers';
+import Constants from './core/constants';
 
 
 let bundled = {};
 
 function getPackagePath(modulePath) {
-    let result = path.relative(projectPath, modulePath);
+    let result = Path.relative(Constants.ProjectDirectory, modulePath);
 
     // Replace "node_modules" with "~"
     result = result.replace('node_modules', '~');
@@ -21,7 +21,7 @@ function getPackagePath(modulePath) {
         return result;
     }
 
-    let nameEnd = result.indexOf(path.sep, lastModulesStart + 2);
+    let nameEnd = result.indexOf(Path.sep, lastModulesStart + 2);
 
     if(nameEnd < 0) {
         return result;
@@ -42,7 +42,7 @@ function logModule(color, name, modulePath, count) {
         bundled[name][packagePath] = true;
 
         // Log module name
-        gutil.log(color(
+        GulpUtil.log(color(
             '[%s] %s (chunks: %s)'),
             name, packagePath, count
         );
@@ -59,7 +59,7 @@ function isVendorModule(name, module, count) {
     }
 
     // Log module entry
-    logModule(gutil.colors.blue, name, module.userRequest, count);
+    logModule(GulpUtil.colors.blue, name, module.userRequest, count);
     return true;
 }
 
@@ -94,7 +94,7 @@ export default {
     },
 
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin({
+        new Webpack.optimize.CommonsChunkPlugin({
             name: 'background/shared',
             minChunks: (module, count) => {
                 if(count < 2) {
@@ -106,7 +106,7 @@ export default {
                 }
 
                 // Log module entry
-                logModule(gutil.colors.cyan, 'background/shared', module.userRequest, count);
+                logModule(GulpUtil.colors.cyan, 'background/shared', module.userRequest, count);
                 return true;
             },
             chunks: [
@@ -119,7 +119,7 @@ export default {
                 'background/messaging/services/storage'
             ]
         }),
-        new webpack.optimize.CommonsChunkPlugin({
+        new Webpack.optimize.CommonsChunkPlugin({
             name: 'background/vendor',
             minChunks: (module, count) => {
                 return isVendorModule('background/vendor', module, count);
@@ -129,7 +129,7 @@ export default {
             ]
         }),
 
-        new webpack.optimize.CommonsChunkPlugin({
+        new Webpack.optimize.CommonsChunkPlugin({
             name: 'shared',
             minChunks: (module, count) => {
                 if(count < 3) {
@@ -141,7 +141,7 @@ export default {
                 }
 
                 // Log module entry
-                logModule(gutil.colors.cyan, 'shared', module.userRequest, count);
+                logModule(GulpUtil.colors.cyan, 'shared', module.userRequest, count);
                 return true;
             },
             chunks: [
@@ -162,7 +162,7 @@ export default {
                 'source/netflix/netflix'
             ]
         }),
-        new webpack.optimize.CommonsChunkPlugin({
+        new Webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             minChunks: (module, count) => {
                 return isVendorModule('vendor', module, count);
@@ -172,7 +172,7 @@ export default {
             ]
         }),
 
-        new webpack.ProvidePlugin({
+        new Webpack.ProvidePlugin({
             '$': 'jquery',
             'jQuery': 'jquery'
         }),
@@ -186,17 +186,17 @@ export default {
         root: [],
 
         alias: {
-            'eon.extension.browser': path.resolve(rootPath, 'src')
+            'eon.extension.browser': Path.resolve(Constants.RootDirectory, 'src')
         }
     },
 
     resolveLoader: {
-        fallback: path.join(rootPath, 'node_modules')
+        fallback: Path.join(Constants.RootDirectory, 'node_modules')
     },
 
     sassLoader: {
         includePaths: [
-            path.resolve(projectPath, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites/scss')
+            Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites/scss')
         ]
     }
 };

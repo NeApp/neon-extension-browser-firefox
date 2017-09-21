@@ -1,13 +1,16 @@
+import Filesystem from 'fs';
+import GulpUtil from 'gulp-util';
 import Merge from 'lodash-es/merge';
-import fs from 'fs';
-import gutil from 'gulp-util';
-import mkdirp from 'mkdirp';
-import path from 'path';
+import Mkdirp from 'mkdirp';
+import Path from 'path';
 
-import {isDefined, listModules, logModuleWarning, rootPath} from './core/helpers';
+import Constants from './core/constants';
+import Log from './core/log';
+import Module from './core/module';
+import {isDefined} from './core/helpers';
 
 
-export function build(Config, options) {
+export function build(Build, options) {
     options = Merge({
         outputPath: null
     }, options || {});
@@ -17,14 +20,14 @@ export function build(Config, options) {
     }
 
     // Retrieve enabled modules
-    let modules = listModules(Config.Modules);
+    let modules = Module.list(Build.modules);
 
     return new Promise((resolve, reject) => {
         // Ensure browser manifest exists
-        let manifestPath = path.join(rootPath, 'manifest.json');
+        let manifestPath = Path.join(Constants.RootDirectory, 'manifest.json');
 
-        if(!fs.existsSync(manifestPath)) {
-            gutil.log(gutil.colors.red(
+        if(!Filesystem.existsSync(manifestPath)) {
+            GulpUtil.log(GulpUtil.colors.red(
                 'Browser has no manifest'
             ));
             return;
@@ -36,11 +39,11 @@ export function build(Config, options) {
             permissions: [],
             optional_permissions: [],
             web_accessible_resources: []
-        }, JSON.parse(fs.readFileSync(manifestPath)));
+        }, JSON.parse(Filesystem.readFileSync(manifestPath)));
 
         // Merge module manifests
         Object.keys(modules).forEach((moduleName) => {
-            if(moduleName === 'eon.extension.browser.firefox') {
+            if(moduleName.indexOf('eon.extension.browser.') === 0) {
                 return;
             }
 
@@ -48,12 +51,12 @@ export function build(Config, options) {
         });
 
         // Ensure build directory exists
-        mkdirp.sync(options.outputPath);
+        Mkdirp.sync(options.outputPath);
 
         // Save manifest to build directory
-        let destPath = path.join(options.outputPath, 'manifest.json');
+        let destPath = Path.join(options.outputPath, 'manifest.json');
 
-        fs.writeFile(destPath, JSON.stringify(manifest, null, 2), (err) => {
+        Filesystem.writeFile(destPath, JSON.stringify(manifest, null, 2), (err) => {
             if(err) {
                 return reject(err);
             }
@@ -65,10 +68,10 @@ export function build(Config, options) {
 
 function mergeModuleManifest(manifest, module) {
     // Ensure module manifest exists
-    let manifestPath = path.join(module.path, 'manifest.json');
+    let manifestPath = Path.join(module.path, 'manifest.json');
 
-    if(!fs.existsSync(manifestPath)) {
-        logModuleWarning(module.name,
+    if(!Filesystem.existsSync(manifestPath)) {
+        Log.moduleWarning(module.name,
             'Module "%s" has no manifest', module.name
         );
         return manifest;
@@ -81,7 +84,7 @@ function mergeModuleManifest(manifest, module) {
 
         origins: [],
         permissions: []
-    }, JSON.parse(fs.readFileSync(manifestPath)));
+    }, JSON.parse(Filesystem.readFileSync(manifestPath)));
 
     // Return manifest merged with module properties
     return {
