@@ -23,10 +23,8 @@
 
   "background": {
     "scripts": [
-      "vendor.js",
-      "shared.js",
-      "background/vendor.js",
-      "background/shared.js",
+      "common.js",
+      "background/common.js",
 
       "background/messaging/messaging.js",
       "background/messaging/services/storage.js",
