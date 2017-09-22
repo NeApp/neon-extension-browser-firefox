@@ -101,7 +101,7 @@ export function constructCompiler(Build, options) {
 
 export function generateConfiguration(Build, options) {
     options = Merge({
-        devtool: null,
+        devtool: false,
         environment: 'development',
         uglify: false
     }, options || {});
@@ -201,43 +201,47 @@ export function generateConfiguration(Build, options) {
         module: {
             ...Base.module,
 
-            preLoaders: [
-                ...Base.module.preLoaders,
+            rules: [
+                ...Base.module.rules,
 
                 {
-                    loader: 'eslint-loader',
                     test: /\.js$/,
-
                     include: esIncludes,
-                    exclude: /(node_modules)/
-                }
-            ],
+                    exclude: /(node_modules)/,
 
-            loaders: [
-                ...Base.module.loaders,
+                    enforce: 'pre',
+                    use: [
+                        'eslint-loader'
+                    ]
+                },
 
                 {
-                    loader: 'imports?this=>window',
                     test: /\.js$/,
-
                     include: [
                         Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites')
+                    ],
+
+                    use: [
+                        'imports-loader?this=>window'
                     ]
                 },
                 {
-                    loader: 'babel',
                     test: /\.js$/,
-
-                    query: {
-                        cacheDirectory: Path.join(Constants.RootDirectory, '.babel/cache'),
-                        presets: ['es2015', 'react']
-                    },
-
                     include: [
                         Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites'),
                         Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/lodash-es'),
 
                         ...esIncludes
+                    ],
+
+                    use: [
+                        {
+                            loader: 'babel-loader',
+                            options: {
+                                cacheDirectory: Path.join(Constants.RootDirectory, '.babel/cache'),
+                                presets: ['es2015', 'react']
+                            },
+                        }
                     ]
                 }
             ]
@@ -256,16 +260,35 @@ export function generateConfiguration(Build, options) {
                 new Webpack.optimize.UglifyJsPlugin(
                     IsPlainObject(options.uglify) ? options.uglify : {}
                 )
+            ] : []),
+
+            ...(options.loaders ? [
+                new Webpack.LoaderOptionsPlugin(options.loaders)
             ] : [])
         ],
 
         resolve: {
             ...Base.resolve,
 
-            root: [
-                ...Base.resolve.root,
+            modules: [
+                // Shared modules
+                Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules'),
 
-                Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules')
+                // Plugin modules
+                ...Object.keys(modules)
+                    .map((moduleName) => {
+                        if(moduleName === 'eon.extension.browser.base') {
+                            return null;
+                        }
+
+                        return Path.join(modules[moduleName].path, 'node_modules');
+                    })
+                    .filter((path) => {
+                        return path !== null;
+                    }),
+
+                // Fallback to local modules
+                ...Base.resolve.modules
             ],
 
             alias: {

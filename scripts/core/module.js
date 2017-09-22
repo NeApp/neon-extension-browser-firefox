@@ -60,7 +60,6 @@ export function listModuleType(type, names) {
 
         // Add module to `modules` object
         result[moduleName] = {
-            ...module,
             ...config,
 
             name: moduleName,

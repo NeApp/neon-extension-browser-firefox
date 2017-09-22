@@ -91,11 +91,10 @@ gulp.task('webextension:production:package', ['clean:production'], (callback) =>
         outputPath: Constants.BuildDirectory.Production.Unpacked,
 
         environment: 'production',
+        uglify: true,
 
-        uglify: {
-            compress: {
-                warnings: false
-            }
+        loaders: {
+            minimize: true
         }
     }).then(
         (stats) => {
@@ -242,7 +241,11 @@ gulp.task('webextension:development:package', ['clean:development'], (callback) 
         rootPath: Constants.BuildDirectory.Development.Root,
         outputPath: Constants.BuildDirectory.Development.Unpacked,
 
-        devtool: 'cheap-source-map'
+        devtool: 'cheap-source-map',
+
+        loaders: {
+            debug: true
+        }
     }).then(
         (stats) => {
             gutil.log(stats.toString('normal'));

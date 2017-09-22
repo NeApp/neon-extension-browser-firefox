@@ -4,6 +4,7 @@ import Path from 'path';
 import Webpack from 'webpack';
 
 import Constants from './core/constants';
+import {isDefined} from './core/helpers';
 
 
 let bundled = {};
@@ -30,7 +31,11 @@ function getPackagePath(modulePath) {
     return result.substring(0, nameEnd);
 }
 
-function logModule(color, name, modulePath, count) {
+function logModule(color, name, modulePath, count, suffix) {
+    if(!isDefined(modulePath)) {
+        return;
+    }
+
     let packagePath = getPackagePath(modulePath);
 
     if(typeof bundled[name] === 'undefined') {
@@ -41,30 +46,46 @@ function logModule(color, name, modulePath, count) {
     if(typeof bundled[name][packagePath] === 'undefined') {
         bundled[name][packagePath] = true;
 
-        // Log module name
-        GulpUtil.log(color(
-            '[%s] %s (chunks: %s)'),
-            name, packagePath, count
+        // Log module details
+        GulpUtil.log(
+            color('[%s] %s (chunks: %s)%s'),
+            name, packagePath, count,
+            suffix ? (' ' + suffix) : ''
         );
     }
 }
 
-function isVendorModule(name, module, count) {
-    if(typeof module === 'undefined' || typeof module.userRequest === 'undefined') {
-        return false;
+function getModuleType(path) {
+    if(!isDefined(path)) {
+        return null;
     }
 
-    if(module.userRequest.indexOf('node_modules') < 0) {
-        return false;
+    // Find matching module type
+    if(path.indexOf(Path.join(Constants.ProjectDirectory, 'Browsers')) === 0) {
+        return 'browser';
     }
 
-    // Log module entry
-    logModule(GulpUtil.colors.blue, name, module.userRequest, count);
-    return true;
+    if(path.indexOf(Path.join(Constants.ProjectDirectory, 'Destinations')) === 0) {
+        return 'destination';
+    }
+
+    if(path.indexOf(Path.join(Constants.ProjectDirectory, 'Sources')) === 0) {
+        return 'source';
+    }
+
+    if(path.indexOf(Path.join(Constants.ProjectDirectory, 'eon.extension.core')) === 0) {
+        return 'core';
+    }
+
+    if(path.indexOf(Path.join(Constants.ProjectDirectory, 'eon.extension.framework')) === 0) {
+        return 'framework';
+    }
+
+    // Unknown module type
+    return null;
 }
 
 export default {
-    debug: true,
     profile: true,
 
     entry: {},
@@ -75,40 +96,42 @@ export default {
     },
 
     module: {
-        preLoaders: [],
-
-        loaders: [
+        rules: [
             {
-                loader: 'file',
-                test: /\.css$/
-            },
-            {
-                loader: 'json',
-                test: /\.json$/
+                test: /\.css$/,
+                use: ['file-loader']
             },
             {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract('style', 'css?sourceMap!sass?sourceMap')
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                sourceMap: true
+                            }
+                        },
+                        {
+                            loader: "sass-loader",
+                            options: {
+                                sourceMap: true,
+
+                                includePaths: [
+                                    Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites/scss')
+                                ]
+                            }
+                        }
+                    ]
+                })
             }
         ]
     },
 
     plugins: [
         new Webpack.optimize.CommonsChunkPlugin({
-            name: 'background/shared',
-            minChunks: (module, count) => {
-                if(count < 2) {
-                    return false;
-                }
+            name: 'background/common',
 
-                if(typeof module === 'undefined' || typeof module.userRequest === 'undefined') {
-                    return false;
-                }
-
-                // Log module entry
-                logModule(GulpUtil.colors.cyan, 'background/shared', module.userRequest, count);
-                return true;
-            },
             chunks: [
                 'background/callback/callback',
                 'background/main/main',
@@ -117,59 +140,82 @@ export default {
                 'background/messaging/messaging',
                 'background/messaging/services/scrobble',
                 'background/messaging/services/storage'
-            ]
-        }),
-        new Webpack.optimize.CommonsChunkPlugin({
-            name: 'background/vendor',
-            minChunks: (module, count) => {
-                return isVendorModule('background/vendor', module, count);
-            },
-            chunks: [
-                'background/shared'
-            ]
-        }),
+            ],
 
-        new Webpack.optimize.CommonsChunkPlugin({
-            name: 'shared',
             minChunks: (module, count) => {
-                if(count < 3) {
+                let type = getModuleType(module.userRequest);
+
+                if(count < 2 && ['browser', 'framework'].indexOf(type) < 0) {
+                    logModule(GulpUtil.colors.cyan, 'background/common', module.userRequest, count, '[type: ' + type + ']');
                     return false;
                 }
 
-                if(typeof module === 'undefined' || typeof module.userRequest === 'undefined') {
-                    return false;
-                }
-
-                // Log module entry
-                logModule(GulpUtil.colors.cyan, 'shared', module.userRequest, count);
+                logModule(GulpUtil.colors.green, 'background/common', module.userRequest, count, '[type: ' + type + ']');
                 return true;
-            },
+            }
+        }),
+        new Webpack.optimize.CommonsChunkPlugin({
+            name: 'destination/common',
+
             chunks: [
-                // Background
-                'background/shared',
-                'background/vendor',
-
-                // Configuration
-                'configuration/configuration',
-
-                // Destinations
                 'destination/lastfm/callback/callback',
-                'destination/trakt/callback/callback',
+                'destination/trakt/callback/callback'
+            ],
 
-                // Sources
+            minChunks: (module, count) => {
+                let type = getModuleType(module.userRequest);
+
+                if(count < 2 && ['browser', 'core', 'framework'].indexOf(type) < 0) {
+                    logModule(GulpUtil.colors.cyan, 'destination/common', module.userRequest, count, '[type: ' + type + ']');
+                    return false;
+                }
+
+                logModule(GulpUtil.colors.green, 'destination/common', module.userRequest, count, '[type: ' + type + ']');
+                return true;
+            }
+        }),
+        new Webpack.optimize.CommonsChunkPlugin({
+            name: 'source/common',
+
+            chunks: [
                 'source/amazonvideo/amazonvideo',
                 'source/googlemusic/googlemusic',
                 'source/netflix/netflix'
-            ]
-        }),
-        new Webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
+            ],
+
             minChunks: (module, count) => {
-                return isVendorModule('vendor', module, count);
-            },
+                let type = getModuleType(module.userRequest);
+
+                if(count < 2 && ['browser', 'core', 'framework'].indexOf(type) < 0) {
+                    logModule(GulpUtil.colors.cyan, 'source/common', module.userRequest, count, '[type: ' + type + ']');
+                    return false;
+                }
+
+                logModule(GulpUtil.colors.green, 'source/common', module.userRequest, count, '[type: ' + type + ']');
+                return true;
+            }
+        }),
+
+        new Webpack.optimize.CommonsChunkPlugin({
+            name: 'common',
+
             chunks: [
-                'shared'
-            ]
+                'background/common',
+                'destination/common',
+                'source/common',
+
+                'configuration/configuration'
+            ],
+
+            minChunks: (module, count) => {
+                if(count < 2) {
+                    logModule(GulpUtil.colors.cyan, 'common', module.userRequest, count);
+                    return false;
+                }
+
+                logModule(GulpUtil.colors.green, 'common', module.userRequest, count);
+                return true;
+            }
         }),
 
         new Webpack.ProvidePlugin({
@@ -177,26 +223,21 @@ export default {
             'jQuery': 'jquery'
         }),
 
-        new ExtractTextPlugin('[name].css', {
+        new ExtractTextPlugin({
+            filename: '[name].css',
             allChunks: true
         })
     ],
 
     resolve: {
-        root: [],
+        modules: [
+            Path.resolve(Constants.RootDirectory, 'node_modules')
+        ],
 
         alias: {
-            'eon.extension.browser': Path.resolve(Constants.RootDirectory, 'src')
+            'eon.extension.browser': Path.resolve(Constants.RootDirectory, 'src'),
+
+            'lodash-amd': 'lodash-es'
         }
-    },
-
-    resolveLoader: {
-        fallback: Path.join(Constants.RootDirectory, 'node_modules')
-    },
-
-    sassLoader: {
-        includePaths: [
-            Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites/scss')
-        ]
     }
 };
