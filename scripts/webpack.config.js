@@ -144,16 +144,11 @@ export default {
                     fallback: 'style-loader',
                     use: [
                         {
-                            loader: 'css-loader',
-                            options: {
-                                sourceMap: true
-                            }
+                            loader: 'css-loader'
                         },
                         {
                             loader: "sass-loader",
                             options: {
-                                sourceMap: true,
-
                                 includePaths: [
                                     Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites/scss')
                                 ]
