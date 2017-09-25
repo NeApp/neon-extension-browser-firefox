@@ -244,7 +244,7 @@ gulp.task('webextension:development:package', ['clean:development'], (callback) 
         rootPath: Constants.BuildDirectory.Development.Root,
         outputPath: Constants.BuildDirectory.Development.Unpacked,
 
-        devtool: 'cheap-source-map',
+        devtool: 'cheap-module-source-map',
 
         loaders: {
             debug: true
