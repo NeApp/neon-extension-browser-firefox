@@ -91,10 +91,13 @@ gulp.task('webextension:production:package', ['clean:production'], (callback) =>
         outputPath: Constants.BuildDirectory.Production.Unpacked,
 
         environment: 'production',
-        uglify: true,
+        devtool: 'hidden-source-map',
 
         loaders: {
             minimize: true
+        },
+        uglify: {
+            sourceMap: true
         }
     }).then(
         (stats) => {
@@ -138,7 +141,7 @@ gulp.task('hybrid:production:wrapper', ['clean:production'], () => {
 
 gulp.task('hybrid:production:webextension', ['webextension:production'], () => {
     // Copy production build
-    return gulp.src(path.join(Constants.BuildDirectory.Production.Unpacked, '**/*'))
+    return gulp.src(path.join(Constants.BuildDirectory.Production.Unpacked, '**/!(*.map)'))
         .pipe(gulp.dest(path.join(Constants.BuildDirectory.Production.Hybrid, 'webextension')));
 });
 
