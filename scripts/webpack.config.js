@@ -85,6 +85,35 @@ function getModuleType(path) {
     return null;
 }
 
+function generateModuleIdentifier(module, fallback) {
+    let suffix = '';
+
+    // Append module identifier on conflicts
+    if(fallback) {
+        suffix = '#' + module.moduleId;
+    }
+
+    // Ignored
+    if(module.absoluteResourcePath.indexOf('ignored ') === 0) {
+        return 'webpack://' + cleanModuleIdentifier(module.shortIdentifier) + suffix;
+    }
+
+    // Bootstrap
+    if(module.absoluteResourcePath.indexOf('webpack/bootstrap ') === 0) {
+        return 'webpack://' + cleanModuleIdentifier(module.shortIdentifier) + suffix;
+    }
+
+    // Convert to relative path
+    let path = Path.resolve(Constants.RootDirectory, module.absoluteResourcePath);
+
+    // Build module identifier
+    return 'webpack://' + cleanModuleIdentifier(Path.relative(Constants.ProjectDirectory, path)) + suffix;
+}
+
+function cleanModuleIdentifier(value) {
+    return value.replace(/\s/g, '/').replace(/\\/g, '/');
+}
+
 export default {
     profile: true,
 
@@ -92,7 +121,15 @@ export default {
     externals: [],
 
     output: {
-        filename: '[name].js'
+        filename: '[name].js',
+
+        devtoolModuleFilenameTemplate: (module) => {
+            return generateModuleIdentifier(module);
+        },
+
+        devtoolFallbackModuleFilenameTemplate: (module) => {
+            return generateModuleIdentifier(module, true);
+        }
     },
 
     module: {
