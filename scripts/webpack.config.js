@@ -73,11 +73,11 @@ function getModuleType(path) {
         return 'source';
     }
 
-    if(path.indexOf(Path.join(Constants.ProjectDirectory, 'eon.extension.core')) === 0) {
+    if(path.indexOf(Path.join(Constants.ProjectDirectory, 'neon-extension-core')) === 0) {
         return 'core';
     }
 
-    if(path.indexOf(Path.join(Constants.ProjectDirectory, 'eon.extension.framework')) === 0) {
+    if(path.indexOf(Path.join(Constants.ProjectDirectory, 'neon-extension-framework')) === 0) {
         return 'framework';
     }
 
@@ -150,7 +150,7 @@ export default {
                             loader: "sass-loader",
                             options: {
                                 includePaths: [
-                                    Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites/scss')
+                                    Path.resolve(Constants.ProjectDirectory, 'Browsers/neon-extension-browser-base/node_modules/foundation-sites/scss')
                                 ]
                             }
                         }
@@ -267,7 +267,7 @@ export default {
         ],
 
         alias: {
-            'eon.extension.browser': Path.resolve(Constants.RootDirectory, 'src'),
+            'neon-extension-browser': Path.resolve(Constants.RootDirectory, 'src'),
 
             'lodash-amd': 'lodash-es'
         }

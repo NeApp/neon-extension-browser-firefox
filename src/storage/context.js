@@ -1,4 +1,4 @@
-import {WebExtensionsStorageContext} from 'eon.extension.browser.base.webextensions/storage/context';
+import {WebExtensionsStorageContext} from 'neon-extension-browser-webextension/storage/context';
 
 
 export class FirefoxStorageContext extends WebExtensionsStorageContext {

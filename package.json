@@ -1,5 +1,5 @@
 {
-  "name": "eon.extension.browser.firefox",
+  "name": "neon-extension-browser-firefox",
   "version": "1.2.3-beta",
   "devDependencies": {
     "@fuzeman/babel-plugin-module-resolver": "^3.0.0-beta.5",

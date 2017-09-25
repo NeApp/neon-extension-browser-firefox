@@ -5,14 +5,14 @@
     "transform-object-rest-spread",
     ["@fuzeman/module-resolver", {
       "root": [
-        "../eon.extension.browser.base/node_modules"
+        "../neon-extension-browser-base/node_modules"
       ],
       "alias": {
-        "eon.extension.browser.base": "../eon.extension.browser.base/src",
-        "eon.extension.browser.base.webextensions": "../eon.extension.browser.base.webextensions/src",
-        "eon.extension.browser.firefox": "./src",
+        "neon-extension-browser-base": "../neon-extension-browser-base/src",
+        "neon-extension-browser-webextension": "../neon-extension-browser-webextension/src",
+        "neon-extension-browser-firefox": "./src",
 
-        "eon.extension.framework": "../../eon.extension.framework/src"
+        "neon-extension-framework": "../../neon-extension-framework/src"
       }
     }]
   ]

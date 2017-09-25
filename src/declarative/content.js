@@ -1,5 +1,5 @@
-import {NotImplementedError} from 'eon.extension.framework/core/exceptions';
-import {WebExtensionsDeclarativeContent} from 'eon.extension.browser.base.webextensions/declarative/content';
+import {NotImplementedError} from 'neon-extension-framework/core/exceptions';
+import {WebExtensionsDeclarativeContent} from 'neon-extension-browser-webextension/declarative/content';
 
 
 export class FirefoxDeclarativeContent extends WebExtensionsDeclarativeContent {

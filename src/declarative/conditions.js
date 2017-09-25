@@ -1,6 +1,6 @@
 import {
     PageStateMatcher
-} from 'eon.extension.browser.base.webextensions/declarative/conditions';
+} from 'neon-extension-browser-webextension/declarative/conditions';
 
 
 export {

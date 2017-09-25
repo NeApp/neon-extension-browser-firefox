@@ -1,5 +1,5 @@
-import FirefoxExtension from 'eon.extension.browser.firefox/extension';
-import {WebExtensionsStorage} from 'eon.extension.browser.base.webextensions/storage';
+import FirefoxExtension from 'neon-extension-browser-firefox/extension';
+import {WebExtensionsStorage} from 'neon-extension-browser-webextension/storage';
 
 
 export class FirefoxStorage extends WebExtensionsStorage {

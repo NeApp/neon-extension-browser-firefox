@@ -168,8 +168,8 @@ export function generateConfiguration(Build, options) {
                     return callback();
                 }
 
-                // Ignore eon modules
-                if(request.indexOf('eon.extension.') === 0) {
+                // Ignore neon modules
+                if(request.indexOf('neon-extension-') === 0) {
                     return callback();
                 }
 
@@ -218,7 +218,7 @@ export function generateConfiguration(Build, options) {
                 {
                     test: /\.js$/,
                     include: [
-                        Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites')
+                        Path.resolve(Constants.ProjectDirectory, 'Browsers/neon-extension-browser-base/node_modules/foundation-sites')
                     ],
 
                     use: [
@@ -228,8 +228,8 @@ export function generateConfiguration(Build, options) {
                 {
                     test: /\.js$/,
                     include: [
-                        Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/foundation-sites'),
-                        Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules/lodash-es'),
+                        Path.resolve(Constants.ProjectDirectory, 'Browsers/neon-extension-browser-base/node_modules/foundation-sites'),
+                        Path.resolve(Constants.ProjectDirectory, 'Browsers/neon-extension-browser-base/node_modules/lodash-es'),
 
                         ...esIncludes
                     ],
@@ -272,12 +272,12 @@ export function generateConfiguration(Build, options) {
 
             modules: [
                 // Shared modules
-                Path.resolve(Constants.ProjectDirectory, 'Browsers/eon.extension.browser.base/node_modules'),
+                Path.resolve(Constants.ProjectDirectory, 'Browsers/neon-extension-browser-base/node_modules'),
 
                 // Plugin modules
                 ...Object.keys(modules)
                     .map((moduleName) => {
-                        if(moduleName === 'eon.extension.browser.base') {
+                        if(moduleName === 'neon-extension-browser-base') {
                             return null;
                         }
 
@@ -338,18 +338,18 @@ function generateModules(Build, modules) {
         'background/callback/callback': [
             ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
-            'eon.extension.core/modules/background/callback'
+            'neon-extension-core/modules/background/callback'
         ],
         'background/main/main': [
             ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
-            'eon.extension.core/modules/background/main'
+            'neon-extension-core/modules/background/main'
         ],
         'background/migrate/migrate': [
             ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
             ...getServices(modules, 'migrate'),
-            'eon.extension.core/modules/background/migrate'
+            'neon-extension-core/modules/background/migrate'
         ],
 
         //
@@ -359,18 +359,18 @@ function generateModules(Build, modules) {
         'background/messaging/messaging': [
             ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
-            'eon.extension.core/modules/background/messaging'
+            'neon-extension-core/modules/background/messaging'
         ],
         'background/messaging/services/scrobble': [
             ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
             ...getServices(destinations, 'destination/scrobble'),
-            'eon.extension.core/modules/background/messaging/services/scrobble'
+            'neon-extension-core/modules/background/messaging/services/scrobble'
         ],
         'background/messaging/services/storage': [
             ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration'),
-            'eon.extension.core/modules/background/messaging/services/storage'
+            'neon-extension-core/modules/background/messaging/services/storage'
         ],
 
         //
@@ -379,11 +379,11 @@ function generateModules(Build, modules) {
 
         'configuration/configuration': [
             // Ensure CSS Dependencies are bundled first
-            'eon.extension.core/modules/configuration/dependencies.scss',
+            'neon-extension-core/modules/configuration/dependencies.scss',
 
             ...Constants.CommonRequirements,
             ...getServices(modules, 'configuration', { includeComponents: true }),
-            'eon.extension.core/modules/configuration'
+            'neon-extension-core/modules/configuration'
         ],
 
         //
@@ -413,8 +413,8 @@ function generateModules(Build, modules) {
 
 function getModule(modules, module) {
     // Parse module name
-    let moduleName = module.name.replace('eon.extension.', '');
-    let splitAt = moduleName.indexOf('.');
+    let moduleName = module.name.replace('neon-extension-', '');
+    let splitAt = moduleName.indexOf('-');
 
     if(splitAt < 0) {
         GulpUtil.log(GulpUtil.colors.red(
@@ -431,7 +431,7 @@ function getModule(modules, module) {
 
     result[type + '/' + plugin + '/' + plugin] = [
         ...Constants.CommonRequirements,
-        ...getServices([modules['eon.extension.core']], 'configuration'),
+        ...getServices([modules['neon-extension-core']], 'configuration'),
         ...getModuleServices(module)
     ];
 
@@ -455,8 +455,8 @@ function getModuleChildren(module) {
     }
 
     // Parse module name
-    let moduleName = module.name.replace('eon.extension.', '');
-    let splitAt = moduleName.indexOf('.');
+    let moduleName = module.name.replace('neon-extension-', '');
+    let splitAt = moduleName.indexOf('-');
 
     if(splitAt < 0) {
         GulpUtil.log(GulpUtil.colors.red(
@@ -518,7 +518,7 @@ function getModuleServices(module) {
             }
 
             // Find matching main module
-            let mainPath = Path.resolve(Constants.ProjectDirectory, 'eon.extension.core/src/modules/' + type + '/index.js');
+            let mainPath = Path.resolve(Constants.ProjectDirectory, 'neon-extension-core/src/modules/' + type + '/index.js');
 
             if(!Filesystem.existsSync(mainPath)) {
                 GulpUtil.log(GulpUtil.colors.red(
@@ -592,15 +592,15 @@ function getServices(modules, type, options) {
 }
 
 function addStaticModule(modules, name, context) {
-    if(context.indexOf('eon.') === -1) {
+    if(context.indexOf('neon-') === -1) {
         GulpUtil.log(GulpUtil.colors.red(
-            'Unable to find "eon." in context: %o'
+            'Unable to find "neon-" in context: %o'
         ), context);
         return;
     }
 
     // Get package name
-    let packageName = context.substring(context.indexOf('eon.'));
+    let packageName = context.substring(context.indexOf('neon-'));
     packageName = packageName.substring(0, packageName.indexOf('\\'));
 
     // Ensure module object exists

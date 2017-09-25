@@ -1,4 +1,4 @@
-import {WebExtensionsWebRequest} from 'eon.extension.browser.base.webextensions/web/request';
+import {WebExtensionsWebRequest} from 'neon-extension-browser-webextension/web/request';
 
 import {FirefoxWebRequestEvent} from './requestEvent';
 

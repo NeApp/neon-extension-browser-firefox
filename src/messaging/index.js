@@ -1,4 +1,4 @@
-import {WebExtensionsMessaging} from 'eon.extension.browser.base.webextensions/messaging';
+import {WebExtensionsMessaging} from 'neon-extension-browser-webextension/messaging';
 
 import {FirefoxPort} from './port';
 

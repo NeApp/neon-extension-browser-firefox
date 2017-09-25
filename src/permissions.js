@@ -1,4 +1,4 @@
-import {WebExtensionsPermissions} from 'eon.extension.browser.base.webextensions/permissions';
+import {WebExtensionsPermissions} from 'neon-extension-browser-webextension/permissions';
 
 
 export class FirefoxPermissions extends WebExtensionsPermissions {

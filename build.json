@@ -1,14 +1,14 @@
 {
   "modules": {
     "browsers": [
-      "eon.extension.browser.base.webextensions",
-      "eon.extension.browser.firefox"
+      "neon-extension-browser-webextension",
+      "neon-extension-browser-firefox"
     ],
     "destinations": [
-      "eon.extension.destination.lastfm"
+      "neon-extension-destination-lastfm"
     ],
     "sources": [
-      "eon.extension.source.googlemusic"
+      "neon-extension-source-googlemusic"
     ]
   }
 }

@@ -2,7 +2,7 @@ import {
     RequestContentScript,
     SetIcon,
     ShowPageAction
-} from 'eon.extension.browser.base.webextensions/declarative/actions';
+} from 'neon-extension-browser-webextension/declarative/actions';
 
 
 export {

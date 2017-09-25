@@ -43,7 +43,7 @@ export function build(Build, options) {
 
         // Merge module manifests
         Object.keys(modules).forEach((moduleName) => {
-            if(moduleName.indexOf('eon.extension.browser.') === 0) {
+            if(moduleName.indexOf('neon-extension-browser-') === 0) {
                 return;
             }
 

@@ -1,5 +1,5 @@
-import {WebExtensionsExtension} from 'eon.extension.browser.base.webextensions/extension';
-import {isDefined} from 'eon.extension.framework/core/helpers';
+import {WebExtensionsExtension} from 'neon-extension-browser-webextension/extension';
+import {isDefined} from 'neon-extension-framework/core/helpers';
 
 
 export class FirefoxExtension extends WebExtensionsExtension {

@@ -22,14 +22,14 @@ export function parseBuildManifest(path) {
             ...modules,
 
             browsers: [
-                'eon.extension.browser.base',
+                'neon-extension-browser-base',
 
                 ...(modules.browsers || [])
             ],
 
             core: [
-                'eon.extension.core',
-                'eon.extension.framework',
+                'neon-extension-core',
+                'neon-extension-framework',
 
                 ...(modules.core || [])
             ]

@@ -41,7 +41,7 @@ export function listModuleType(type, names) {
         // Retrieve module configuration (but ignore browser modules)
         let config = {};
 
-        if(moduleName.indexOf('eon.extension.browser.') === -1) {
+        if(moduleName.indexOf('neon-extension-browser-') === -1) {
             // Build module configuration file path
             let configPath = Path.resolve(modulePath, 'config.js');
 
@@ -98,10 +98,7 @@ function ignoreModule(moduleName, color, message) {
         color = GulpUtil.colors.red;
     }
 
-    return Log.moduleError(moduleName, color, 'Ignoring module "%s": %s', [
-        moduleName,
-        message
-    ]);
+    return Log.moduleError(moduleName, color, 'Ignoring module "%s": %s', moduleName, message);
 }
 
 export function parseConfiguration(path) {
