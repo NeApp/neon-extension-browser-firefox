@@ -2,18 +2,6 @@
   "presets": ["es2015", "react"],
   "plugins": [
     "add-module-exports",
-    "transform-object-rest-spread",
-    ["@fuzeman/module-resolver", {
-      "root": [
-        "../neon-extension-browser-base/node_modules"
-      ],
-      "alias": {
-        "neon-extension-browser-base": "../neon-extension-browser-base/src",
-        "neon-extension-browser-webextension": "../neon-extension-browser-webextension/src",
-        "neon-extension-browser-firefox": "./src",
-
-        "neon-extension-framework": "../../neon-extension-framework/src"
-      }
-    }]
+    "transform-object-rest-spread"
   ]
 }
