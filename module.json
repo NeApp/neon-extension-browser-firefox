@@ -1,0 +1,7 @@
+{
+  "webpack": {
+    "alias": {
+      "neon-extension-browser": "./"
+    }
+  }
+}
