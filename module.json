@@ -1,4 +1,13 @@
 {
+  "browser": {
+    "api": {
+      "declarativeContent": false,
+      "messaging": true,
+      "permissions": false,
+      "tabs": true,
+      "webRequest": true
+    }
+  },
   "webpack": {
     "alias": {
       "neon-extension-browser": "./"
