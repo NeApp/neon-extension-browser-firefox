@@ -17,5 +17,8 @@
     "eslint-loader": "^1.5.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-react": "^6.3.0"
+  },
+  "scripts": {
+    "test": "echo No tests available yet."
   }
 }

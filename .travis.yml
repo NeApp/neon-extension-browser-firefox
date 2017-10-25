@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- '7'
+script:
+- npm run test
+deploy:
+  provider: npm
+  email: neapp-ci@me.dgardiner.net
+  api_key:
+    secure: H7Nes6Z4oIALFuXn3VR8LCkRyqar2UVp481oEhL0KNYarXtyw7v//ooJGNo1AJTob+szcHzzJNZ1tMoB+mmnQ7oXGtQKp0/nYBV/17gyvN1kRIhOR0HqbKPECfNS0YZw6zqos1MM91MSkbgzEtNr6AzRjaxPSBCW1Kt5mO3dCwnHcgVqe5uebgjuJRa3aKWlR06t3D4NR8nMrUz2evCtsnUJ5ScsKpLDEGyObC4jfFf8t7yW3EaDfeMwvlOJzkrY7JF5Bwq1Hn4MY6n8ZdP6Kr10DDmWUHinPkl4hIk9mIs08fgp3ECUHZRLQrEdRjpZ5vOLQ6ROEqo1/j6HAeRFasHtjub3mEPkTC55DgmUl+fZO1TC3JikAIz5i3AO4/P4OfnvSPivl9+NpFAIaiNEkQgOFk1UkwYQEAqb6zpqkqEaUEApVfqezRr1MmbiDXT6ZPsKhurZ2vGh+G0LpaUyjQj+aSpiKToJsth2LNSTRq2gFrEJF5YwjJvOEFiHGgkSFfd35lo8Fzec6kA7cfe+7+vhiGJH4PV9B/6oboacZYCEfaSS3yUqqL0ITGyLR+UeXdHf35G/WCh5EJ/XfRVJtRFryO7xztJb0SKnWfMm7H7dvFpFyN8oI/T8LWPbak60KmkEhtVDppM8F+iNREttYNWlHYquw7EFD51ZXuX5Lgg=
+  on:
+    repo: NeApp/neon-extension-browser-firefox
+    tags: true
