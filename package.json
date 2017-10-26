@@ -1,9 +1,21 @@
 {
   "name": "neon-extension-browser-firefox",
   "version": "1.5.1-beta.1",
-  "peerDependencies": {
-    "neon-extension-browser-webextension": "^1.5.1-beta.1",
-    "neon-extension-framework": "^1.5.1-beta.1"
+  "description": "Neon Extension: Firefox Interface",
+  "keywords": ["neon", "neon-extension", "firefox"],
+  "homepage": "https://github.com/NeApp/neon-extension",
+  "author": "Dean Gardiner <me@dgardiner.net>",
+  "license": "GPL-3.0",
+  "main": "./src",
+  "bugs": {
+    "url": "https://github.com/NeApp/neon-extension/issues"
+  },
+  "repostitory": {
+    "type": "git",
+    "url": "https://github.com/NeApp/neon-extension-browser-firefox"
+  },
+  "scripts": {
+    "test": "echo No tests available yet."
   },
   "devDependencies": {
     "babel-core": "^7.0.0-beta.1",
@@ -18,7 +30,8 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-react": "^6.3.0"
   },
-  "scripts": {
-    "test": "echo No tests available yet."
+  "peerDependencies": {
+    "neon-extension-browser-webextension": "^1.5.1-beta.1",
+    "neon-extension-framework": "^1.5.1-beta.1"
   }
 }
