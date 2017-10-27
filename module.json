@@ -4,6 +4,7 @@
       "declarativeContent": false,
       "messaging": true,
       "permissions": false,
+      "storage": true,
       "tabs": true,
       "webRequest": true
     }
