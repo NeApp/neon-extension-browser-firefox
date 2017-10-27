@@ -20,7 +20,7 @@ export class FirefoxExtension extends WebExtensionsExtension {
             path = '';
         }
 
-        return 'https://neon.self.skipthe.net' + path;
+        return 'https://callback.neon.skipthe.net' + path;
     }
 }
 
