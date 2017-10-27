@@ -1,4 +1,4 @@
-import {WebExtensionsPlatform, Platforms, PlatformTypes} from 'neon-extension-browser-webextension/platform';
+import {WebExtensionPlatform, Platforms, PlatformTypes} from 'neon-extension-browser-webextension/platform';
 
 
 export {
@@ -6,7 +6,7 @@ export {
     PlatformTypes
 };
 
-export class FirefoxPlatform extends WebExtensionsPlatform {
+export class FirefoxPlatform extends WebExtensionPlatform {
     get name() {
         return Platforms.Firefox;
     }
