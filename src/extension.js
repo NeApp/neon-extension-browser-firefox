@@ -4,7 +4,7 @@ import {isDefined} from 'neon-extension-framework/core/helpers';
 
 export class FirefoxExtension extends WebExtensionsExtension {
     get origin() {
-        let baseUrl = browser.extension.getURL('');
+        let baseUrl = this.getURL('');
 
         if(baseUrl[baseUrl.length - 1] === '/') {
             return baseUrl.substring(0, baseUrl.length - 1);
@@ -14,13 +14,11 @@ export class FirefoxExtension extends WebExtensionsExtension {
     }
 
     getCallbackUrl(path) {
-        if(isDefined(path) && path[0] !== '/') {
-            path = '/' + path;
-        } else if(!isDefined(path)) {
+        if(!isDefined(path)) {
             path = '';
         }
 
-        return 'https://callback.neon.skipthe.net' + path;
+        return this.getUrl(path);
     }
 }
 
