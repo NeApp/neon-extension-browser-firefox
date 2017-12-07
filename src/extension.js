@@ -1,5 +1,6 @@
+import IsNil from 'lodash-es/isNil';
+
 import {WebExtensionsExtension} from 'neon-extension-browser-webextension/extension';
-import {isDefined} from 'neon-extension-framework/core/helpers';
 
 
 export class FirefoxExtension extends WebExtensionsExtension {
@@ -14,7 +15,7 @@ export class FirefoxExtension extends WebExtensionsExtension {
     }
 
     getCallbackUrl(path) {
-        if(!isDefined(path)) {
+        if(IsNil(path)) {
             path = '';
         }
 
