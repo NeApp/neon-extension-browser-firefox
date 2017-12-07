@@ -35,6 +35,7 @@
     "eslint-plugin-react": "^6.3.0"
   },
   "peerDependencies": {
+    "lodash-es": "^4.16.1",
     "neon-extension-browser-webextension": "^1.5.1",
     "neon-extension-framework": "^1.5.1"
   }
