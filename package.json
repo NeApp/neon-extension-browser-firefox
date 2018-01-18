@@ -1,6 +1,6 @@
 {
   "name": "neon-extension-browser-firefox",
-  "version": "1.6.0-beta.1",
+  "version": "1.6.0",
   "description": "Neon Extension: Firefox Interface",
   "keywords": [
     "neon",
@@ -37,7 +37,7 @@
   },
   "peerDependencies": {
     "lodash-es": "^4.16.1",
-    "neon-extension-browser-webextension": "^1.6.0-beta.1",
-    "neon-extension-framework": "^1.6.0-beta.1"
+    "neon-extension-browser-webextension": "^1.6.0",
+    "neon-extension-framework": "^1.6.0"
   }
 }
