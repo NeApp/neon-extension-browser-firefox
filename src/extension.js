@@ -1,5 +1,3 @@
-import IsNil from 'lodash-es/isNil';
-
 import {WebExtensionsExtension} from 'neon-extension-browser-webextension/extension';
 
 
@@ -12,14 +10,6 @@ export class FirefoxExtension extends WebExtensionsExtension {
         }
 
         return baseUrl;
-    }
-
-    getCallbackUrl(path) {
-        if(IsNil(path)) {
-            path = '';
-        }
-
-        return this.getUrl(path);
     }
 }
 
