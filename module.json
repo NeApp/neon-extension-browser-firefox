@@ -3,7 +3,7 @@
     "api": {
       "declarativeContent": false,
       "messaging": true,
-      "permissions": false,
+      "permissions": true,
       "storage": true,
       "tabs": true,
       "webRequest": true
